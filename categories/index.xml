@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Juan Flórez</title>
+    <link>http://juancaflorez.github.io/categories/</link>
+    <description>Recent content in Categories on Juan Flórez</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 16 Jun 2020 21:52:49 +0000</lastBuildDate><atom:link href="http://juancaflorez.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>concept</title>
+      <link>http://juancaflorez.github.io/categories/concept/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:49 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/concept/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>modeling</title>
+      <link>http://juancaflorez.github.io/categories/modeling/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:41 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/modeling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sculpting</title>
+      <link>http://juancaflorez.github.io/categories/sculpting/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:41 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/sculpting/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>game design</title>
+      <link>http://juancaflorez.github.io/categories/game-design/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:39 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/game-design/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>code</title>
+      <link>http://juancaflorez.github.io/categories/code/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/code/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mechanic</title>
+      <link>http://juancaflorez.github.io/categories/mechanic/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/mechanic/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>prototype</title>
+      <link>http://juancaflorez.github.io/categories/prototype/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/prototype/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>unreal</title>
+      <link>http://juancaflorez.github.io/categories/unreal/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/unreal/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>coding</title>
+      <link>http://juancaflorez.github.io/categories/coding/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:33 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/coding/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>shaders</title>
+      <link>http://juancaflorez.github.io/categories/shaders/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:33 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/shaders/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

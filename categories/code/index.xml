@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>code on Juan Flórez</title>
+    <link>http://juancaflorez.github.io/categories/code/</link>
+    <description>Recent content in code on Juan Flórez</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 16 Jun 2020 21:52:36 +0000</lastBuildDate><atom:link href="http://juancaflorez.github.io/categories/code/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Niebla | Game Prototype</title>
+      <link>http://juancaflorez.github.io/portfolio/niebla/</link>
+      <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/portfolio/niebla/</guid>
+      <description>Fog of War Niebla is a game prototype about using the fog of war mechanic from traditional RTS games and adding dynamic elements to it.</description>
+    </item>
+    
+  </channel>
+</rss>
