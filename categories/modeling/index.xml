@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>modeling on Juan Flórez</title>
-    <link>http://juancaflorez.github.io/categories/modeling/</link>
+    <link>https://juancaflorez.github.io/categories/modeling/</link>
     <description>Recent content in modeling on Juan Flórez</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Jun 2020 21:52:41 +0000</lastBuildDate><atom:link href="http://juancaflorez.github.io/categories/modeling/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 16 Jun 2020 21:52:41 +0000</lastBuildDate><atom:link href="https://juancaflorez.github.io/categories/modeling/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Afronaut | Asset</title>
-      <link>http://juancaflorez.github.io/portfolio/afronaut-asset/</link>
+      <link>https://juancaflorez.github.io/portfolio/afronaut-asset/</link>
       <pubDate>Tue, 16 Jun 2020 21:52:41 +0000</pubDate>
       
-      <guid>http://juancaflorez.github.io/portfolio/afronaut-asset/</guid>
+      <guid>https://juancaflorez.github.io/portfolio/afronaut-asset/</guid>
       <description>Entirely done using Blender&amp;rsquo;s new sculpting tools, and the addon Retopoflow.</description>
     </item>
     

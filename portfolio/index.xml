@@ -2,62 +2,62 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Portfolio on Juan Flórez</title>
-    <link>http://juancaflorez.github.io/portfolio/</link>
+    <link>https://juancaflorez.github.io/portfolio/</link>
     <description>Recent content in Portfolio on Juan Flórez</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 14 Jun 2021 21:52:36 +0000</lastBuildDate><atom:link href="http://juancaflorez.github.io/portfolio/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 14 Jun 2021 21:52:36 +0000</lastBuildDate><atom:link href="https://juancaflorez.github.io/portfolio/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Entropy | Tool Prototype</title>
-      <link>http://juancaflorez.github.io/portfolio/kadk-thesis/</link>
+      <link>https://juancaflorez.github.io/portfolio/kadk-thesis/</link>
       <pubDate>Mon, 14 Jun 2021 21:52:36 +0000</pubDate>
       
-      <guid>http://juancaflorez.github.io/portfolio/kadk-thesis/</guid>
+      <guid>https://juancaflorez.github.io/portfolio/kadk-thesis/</guid>
       <description>Entropy   </description>
     </item>
     
     <item>
       <title>Afronaut | Concept</title>
-      <link>http://juancaflorez.github.io/portfolio/afronaut-concept/</link>
+      <link>https://juancaflorez.github.io/portfolio/afronaut-concept/</link>
       <pubDate>Tue, 16 Jun 2020 21:52:49 +0000</pubDate>
       
-      <guid>http://juancaflorez.github.io/portfolio/afronaut-concept/</guid>
+      <guid>https://juancaflorez.github.io/portfolio/afronaut-concept/</guid>
       <description>From a forgotten space program. This project is inspired by the photo essay Afronauts by the artist Cristina de Middel, recreating Zambia&amp;rsquo;s Forgotten Space Program.</description>
     </item>
     
     <item>
       <title>Afronaut | Asset</title>
-      <link>http://juancaflorez.github.io/portfolio/afronaut-asset/</link>
+      <link>https://juancaflorez.github.io/portfolio/afronaut-asset/</link>
       <pubDate>Tue, 16 Jun 2020 21:52:41 +0000</pubDate>
       
-      <guid>http://juancaflorez.github.io/portfolio/afronaut-asset/</guid>
+      <guid>https://juancaflorez.github.io/portfolio/afronaut-asset/</guid>
       <description>Entirely done using Blender&amp;rsquo;s new sculpting tools, and the addon Retopoflow.</description>
     </item>
     
     <item>
       <title>Masters in design | Spring 2020</title>
-      <link>http://juancaflorez.github.io/portfolio/kadk-spring2020/</link>
+      <link>https://juancaflorez.github.io/portfolio/kadk-spring2020/</link>
       <pubDate>Tue, 16 Jun 2020 21:52:39 +0000</pubDate>
       
-      <guid>http://juancaflorez.github.io/portfolio/kadk-spring2020/</guid>
+      <guid>https://juancaflorez.github.io/portfolio/kadk-spring2020/</guid>
       <description>A collection of four projects done during the spring semester of 2020 at the Royal Danish Academy, School of Design, Master of Game Design.</description>
     </item>
     
     <item>
       <title>Niebla | Game Prototype</title>
-      <link>http://juancaflorez.github.io/portfolio/niebla/</link>
+      <link>https://juancaflorez.github.io/portfolio/niebla/</link>
       <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
       
-      <guid>http://juancaflorez.github.io/portfolio/niebla/</guid>
+      <guid>https://juancaflorez.github.io/portfolio/niebla/</guid>
       <description>Fog of War Niebla is a game prototype about using the fog of war mechanic from traditional RTS games and adding dynamic elements to it.</description>
     </item>
     
     <item>
       <title>Pieces | Code Project</title>
-      <link>http://juancaflorez.github.io/portfolio/pieces/</link>
+      <link>https://juancaflorez.github.io/portfolio/pieces/</link>
       <pubDate>Tue, 16 Jun 2020 21:52:33 +0000</pubDate>
       
-      <guid>http://juancaflorez.github.io/portfolio/pieces/</guid>
+      <guid>https://juancaflorez.github.io/portfolio/pieces/</guid>
       <description>Is a code project inspired by the watercolors of Thomas Girtin and other prominent painters from the 18th century.</description>
     </item>
     
