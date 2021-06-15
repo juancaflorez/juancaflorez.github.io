@@ -6,7 +6,43 @@
     <description>Recent content in Categories on Juan Flórez</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Jun 2020 21:52:49 +0000</lastBuildDate><atom:link href="http://juancaflorez.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 14 Jun 2021 21:52:36 +0000</lastBuildDate><atom:link href="http://juancaflorez.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>code</title>
+      <link>http://juancaflorez.github.io/categories/code/</link>
+      <pubDate>Mon, 14 Jun 2021 21:52:36 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/code/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>procedural</title>
+      <link>http://juancaflorez.github.io/categories/procedural/</link>
+      <pubDate>Mon, 14 Jun 2021 21:52:36 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/procedural/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>prototype</title>
+      <link>http://juancaflorez.github.io/categories/prototype/</link>
+      <pubDate>Mon, 14 Jun 2021 21:52:36 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/prototype/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>unreal</title>
+      <link>http://juancaflorez.github.io/categories/unreal/</link>
+      <pubDate>Mon, 14 Jun 2021 21:52:36 +0000</pubDate>
+      
+      <guid>http://juancaflorez.github.io/categories/unreal/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>concept</title>
       <link>http://juancaflorez.github.io/categories/concept/</link>
@@ -44,38 +80,11 @@
     </item>
     
     <item>
-      <title>code</title>
-      <link>http://juancaflorez.github.io/categories/code/</link>
-      <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
-      
-      <guid>http://juancaflorez.github.io/categories/code/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>mechanic</title>
       <link>http://juancaflorez.github.io/categories/mechanic/</link>
       <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
       
       <guid>http://juancaflorez.github.io/categories/mechanic/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>prototype</title>
-      <link>http://juancaflorez.github.io/categories/prototype/</link>
-      <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
-      
-      <guid>http://juancaflorez.github.io/categories/prototype/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>unreal</title>
-      <link>http://juancaflorez.github.io/categories/unreal/</link>
-      <pubDate>Tue, 16 Jun 2020 21:52:36 +0000</pubDate>
-      
-      <guid>http://juancaflorez.github.io/categories/unreal/</guid>
       <description></description>
     </item>
     
