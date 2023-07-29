@@ -2,18 +2,6 @@
 
 What is this site?
 
-Here I collect usefull content for other technical artists and store my personal workflow for problem solving
+Here I collect useful content for other technical artists and store my personal workflow for problem solving approaches to different tasks, most of them related environment art.
 
-## Commands
-
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+Interested in processes before assets or quick snippets
