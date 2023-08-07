@@ -20,12 +20,17 @@ theme:
 plugins:
   - tags
 
+extra_css:
+  - css/neoteroi.css
 
 markdown_extensions:
   - attr_list
   - md_in_html
   - tables
   - footnotes
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -37,11 +42,13 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - admonition
+  - neoteroi.cards
 
 nav:
   - Home: 'index.md'
   - Long read:
       - long-read/index.md
+      - Houdini and Flecs: long-read/hou-flecs.md
       - Runtime Map : long-read/map-graph.md
-      - Planets : long-read/planets-bgr.md
+      - Mobile Planets : long-read/planets-bgr.md
   - About: 'about/index.md'

@@ -3,6 +3,7 @@ tags:
   - space
   - unity
   - pcg
+  - computational geometry
 ---
 # Runtime map generation
 
@@ -13,97 +14,101 @@ tags:
   <figcaption>Territories map generated from live data</figcaption>
 </figure>
 
-This page documents the creation process of selecting algorithms, libraries and shaders to create a runtime procedurally generated map.
-No specific code from the project is shared here.
-
-As it was the case in the planets long read document, the hardware limitations of a mobile device create are the biggest obstacle to overcome. From the beginning it was obvious that the map geometry would be composed of many non homogeneous elements and parts. This meant that instancing the geometry was not an option, and instead all the geometry would have to be merged into the least amount of pieces in order to reduce the draw calls.
-
+This page documents the creation process of selecting algorithms, libraries and shaders to create a runtime procedurally generated map. No specific code from the project is shared here.
+## Limitations
+As it was the case in the planets long read document, the hardware limitations of a mobile device were the biggest obstacle. 
+The map has many heterogeneous elements(geometry with different triangle count), this meant that instancing the geometry was not an option (GPU instancing). Instead all the geometry would have to be merged to create the least amount of pieces in order to reduce the number of draw calls.
 ## Inputs
+The game is a persistent multiplayer game, and the players can own and conquer parts of the map, this changes are visible instantaneously. A game designer controls the settings of the map (factions, owners, names) using a live spreadsheet, and the Art Director can shape the look of the map moving the centers of each star system.
 
-The game is a persistent multiplayer game, and the players can own and conquer parts of the map, this changes are visible instantaneously. The game designer drives the many of the settings of the map (factions, owners, names) using a live spreadsheet, and the Art Lead can shape the look of the map moving the centers of each star system.
+!!! warning
 
-From the code side, the data is nested inside many c# objects, which can make harder to have a sense of the data while developing the system. 
+    Data validation: The coordinates must be checked for duplicates! Otherwise the created dictionaries that map a star system to a specific part of the map will break.
 
-The first step in the development was to format the data in a flat structure, similar to how Houdini represents point/prims data.
+## Flat data
+From the code side, the data is nested inside many c# objects, and accessed through interfaces, which can make harder to have a sense of the raw data while developing the system. Because of this the first step in the development was to format the data in a flat structure, similar to how Houdini represents point/prims data.
 
-Data Validation: The coordinates must be checked for duplicates!
+## A map is a graph
+Since our most important input is just point coordinates, it was decided that the fastest way to create geometry was to use a Delaunay triangulation library [^1]. From the triangulation we can extract the dual graph(voroinoi graph) that will become the starting point of the map.
+From these two graphs we can construct the following structures:
 
-The coordinates of each star system of the map are the 
+| Structure | Characteristic                        | Graph    |
+|-----------|---------------------------------------|----------|
+| Center    | Star system center                    | Delaunay |
+| Region    | Triangles  touching a center          | Delaunay |
+| Neighbor  | Edge connection to other start system | Delaunay |
+| Corner    | Vertex shared by frontiers            | Voronoi  |
+| Frontier  | Edge shared by two regions            | Voronoi  |
 
-Red blob games
+The data structures are made up of only integers pointing to three different arrays an their indices (points, edges, triangles). Internally the delaunay graph (in this implementation) uses the *half edges* data structure[^2]. This structure allows us to walk the geometry and to find relations between the two graphs easily.
+
+!!! note
+
+    On helper functions: Similar to how Houdini handles half edges, several  static functions were build to travel the graphs.
+    Visit: [VEX halfedges](https://www.sidefx.com/docs/houdini/vex/halfedges.html)
 
 <figure markdown>
   ![Geometric structure](rsr/mapgraph/territories_terms.png){ loading=lazy }
   <figcaption>Geometry from the graph</figcaption>
 </figure>
 
+## Territories
+With the graphs in place, the next step was to use the remaining data to group regions, remove areas and add colors and uvs to the geometry. The additional data includes: faction color, faction name, parent factions, owner, and many other attributes that are used as filters.
 
-territory (group of regions)
-region (voroinoi - site)
-site (voroinoi)
-frontier (delayunay)
-border
-corners 
-perimeter (voroinoi)
-neighbor (delayunay)
+| Structure | Characteristic                      | Graph       |
+|-----------|-------------------------------------|-------------|
+| Territory | Group of regions sharing an owner   | Territories |
+| Void      | Unused geometry, shape territory    | Territories |
+| Island    | Disconnected regions in a territory | Territories |
 
-Designing the shape with voids
-Shape of each ter is build from the proximity and angle from other territories
+In this implementation, we use LINQ expressions to filter the data arrays. LINQ code looks small and readable, but it is not performant.
+It carries a huge burden for the GC, it is important to not use it in tasks with frequent updates, in this case the generation process only happens when the data changes which can happen as low as every 1 minute, not inside an update loop.
 
-
-
-## Data preparation
-
-Flatten the data, similar to the way houdini presents the data for a point/primitive.
-basic types, uints, strings, arrays of uints
-
-## Core algorithms
-
-DelaunatorSharp -> Dual graph
-
-Centers
-
-
-Implementation
-One class takes care of building the graph, static class, BuildGraph
-Only takes coordinates, and guaranties that each coordinate will have the same index from the array of coordinates. No swapping or deleting indices
-Special consideration should be given to avoid or reject sites that share the same coordinate, this will create errors in the next step
-
-The result of building the graph includes, a delayunay graph and a voroinoi graph, along with vertices, edges and triangles. 
-
-Second class: TerritoriesBuilder ingest the result and associates the indices of each entry with a voroinoi site
-
-Sites marked as voids are removed from the available territories.
-Adjacent regions are tagged as a borders
-
-Afterwards the data is grouped, in this context (Unity) I use LINQ expressions. In Unreal a similar filtering can be done using Lambda functions
-
-
-
-Expressions can create garbage, it is important to not use them in tasks with frequent updates, in this case the build process only happens when the data changes which can happen every 1 minute, enough for the garbage collector to do his job.
+<figure class="video_container">
+  <video controls="true" allowfullscreen="true">
+    <source src="../rsr/mapgraph/ownerchange.webm" type="video/webm">
+  </video>
+  <figcaption>Changing an owner</figcaption>
+</figure>
 
 ## Classify, sort, resolve, travel graphs
+After the filtering process, each territory is assembled region by region.
+Depending on the neighbors of each region, an *inset geo operator* displaces the vertices inwards.
+Other operators are in charge of creating the links between regions, the corners, assigning UV coordinates, etc. All the operators work following rules to decide to  create geometry and metadata.
 
-Rule based geometry construction and removal
-
-Static functions return boolean, 
-is region boundary
-is frontier a gap
-
-Find islands, recursive breadth search
-
-g3 computational geometry library
-
-## Center of a territory, challenge
-
-mapbox polylabel algorithm
+## Center of a territory
+In the map each territory is identified by a color and a banner. The banner is supposed to be in the visual center of each territory. The most expensive operator involves finding this center. On a territory with a convex shape just using the mean position of the star systems often yields a good result, but on territories that are made up of islands or that have concave shapes finding the correct center is not trivial.
 
 <figure markdown>
   ![Geometric structure](rsr/mapgraph/territories_center.png){ loading=lazy }
   <figcaption>Finding the center of each territory</figcaption>
 </figure>
 
+After trying a few algorithms (Centroid Algorithm and Straight Skeleton)[^3], the best and fastest approach found was mapbox's polylabel[^4]
+This algorithm expects requires exclusivelly the vertices that are in the perimeter of the shape, and the coordinates formatted using a GeoJSON-like format. In such format all vertices in a shape must be orderer sequencially, which can be hard to obtain from just using the voroinoi graph.
+For this we used another geometry library as the basic foundation for our geometric types, the g3 computational geometry library.[^5] The mesh class in this library comes packed with many features, one of them is to be able to determine the outher edges in a mesh easly and to walk the other edges of a shape sequencially.
+
+!!! info
+    
+    The g3 library developed for csharp has not been updated in a few years, luckly  the developer now works in a [similar library](http://www.gradientspace.com/tutorials/2022/12/19/geometry-script-faq) for Unreal Engine! 🙂
+
+<figure class="video_container">
+  <video controls="true" allowfullscreen="true">
+    <source src="../rsr/mapgraph/ownerhighlight.webm" type="video/webm">
+  </video>
+  <figcaption>Signal received to highlight specific areas of the geometry</figcaption>
+</figure>
+
+
 ## Collaboration and credits
 
-The work done for this feature includes the generation of the geometry and the preparation of the data embedded in the geometry, the shader and the map shape where created by other team members.
+The work done in this feature includes the generation of the geometry and the preparation of the data embedded in the geometry (as UVs data), the shader and the map shape were in collaboration with other team members of the art department.
 
+[^1]: Redblob games has an easy to follow article about the [Delaunator](https://mapbox.github.io/delaunator/) library 
+[^2]: [Half edges data structure](https://cs184.eecs.berkeley.edu/sp19/article/15/the-half-edge-data-structure)
+[^3]: [Centroid](https://graphstream-project.org/doc/Algorithms/Centroid/) and [Straigh Skeleton](https://en.wikipedia.org/wiki/Straight_skeleton)
+[^4]: 
+    [Polylabel explanined](https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc) and 
+    [Poles of inaccessibility](ttps://sites.google.com/site/polesofinaccessibility/) article
+[^5]: 
+    [Computational geometry library](https://github.com/gradientspace/geometry3Sharp)
