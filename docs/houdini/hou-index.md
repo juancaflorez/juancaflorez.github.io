@@ -2,4 +2,4 @@
 
 Here is a note
 
-[synthetic environments](environments/synth-env.md)
+[synthetic environments](environments/synth-rocs.md)
