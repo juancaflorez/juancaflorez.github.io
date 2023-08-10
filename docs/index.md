@@ -1,7 +1,4 @@
-# Technical Art
+# Intro
 
-What is this site?
+Hi I am Juan, here you can find a selection of projects I have worked on, my personal workflow and problem solving approach. Most of the content in this site is related to environment art, and data workflows.
 
-Here I collect useful content for other technical artists and store my personal workflow for problem solving approaches to different tasks, most of them related environment art.
-
-Interested in processes before assets or quick snippets
