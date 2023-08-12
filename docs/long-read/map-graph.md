@@ -5,7 +5,7 @@ tags:
   - pcg
   - computational geometry
 ---
-# Runtime map generation
+# Runtime Map
 
 <figure class="video_container">
   <video controls="true" allowfullscreen="true">

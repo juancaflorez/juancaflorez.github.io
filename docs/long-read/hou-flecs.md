@@ -1,5 +1,5 @@
 
-# Houdini to flecs
+# Houdini to Flecs
 
 From Houdini to flecs using Unreal
 

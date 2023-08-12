@@ -5,30 +5,29 @@ tags:
   - unity
   - blender
 ---
-# Planet generation
+# Procedural Planets
 ![Homeworld mobile](rsr/planetsbgr/planets_hw.png){ loading=lazy }
 
 ## Intro
-This page documents the creation process of creating shaders and textures for a planets system in a mobile platform game, however it doesn't expose any specific parts of C# code (Unity) or the specifics of the rendering pipeline from the game for legal reasons.
-The planets were created for the URP rendering pipeline, under a tight texture budget and hardware limitations.
+This page documents the creation process of creating shaders and textures for a PCG planets system targeting mobile platforms. However the document doesn't expose any specific parts of C# code (Unity) or the code from the rendering pipeline for legal reasons.
 
 ## Previous work
-As with any other work, it is important to consult previous solutions before reinventing the wheel. The best description found came from another tech team in a similar game genre, [eve online](https://www.eveonline.com/news/view/awesome-looking-planets)
-In the referenced article they outline their approach in broad terms and mention the key challenges in their generation system. This resource served me as a guide.
+As with any other work, it is important to consult previous solutions before reinventing the wheel. The best documented solution found came from another tech team in a similar game genre, [EVE online](https://www.eveonline.com/news/view/awesome-looking-planets).
+In the referenced article they outline their approach in broad terms and mention the key challenges in their generation system.
 
 A few interesting highlights from the article include:
 
-  - The planets are generated blending height maps
-  - The height maps are created by a team of artists
-  - The planet shader uses two projections to avoid texture distortions at the poles
+  - The planets were generated blending height maps
+  - The height maps were created by a team of artists
+  - The planet shaders uses two projections to avoid texture distortions at the poles
 
 ## Resources and expectations
-An important consideratioin for this planet generation system is the need to coexist with other systems that use many megabytes of textures in disk and memory(VRAM), this left us constrained in how many textures could be loaded at one time, and the size of them.
-For the generation of the heightmaps, the area of expertise of the artists in the game is hard surfaces, this was at odds with the need of creating sculpted height maps and terrain features.
+An important consideration for this planet generation system is the need to coexist with other systems that use many megabytes of textures in disk and memory. This left us constrained in how many textures could be loaded at one time, and the size of them.
+
+For the generation of the height maps, the area of expertise of the artists in the team was hard surface modeling, this was at odds with the need of creating sculpted height maps and terrain features.
 
 ## Seamless projections
-
-A texture projection over a sphere will always contain a distortions at the poles. My solution was to solve this issue at the shader level using the following:
+A texture projection over a sphere will always contain distortions at the poles. My solution was to solve this issue at the shader level using:
 
 - Two uv sets, one with an equirectangular projection for the equator, and a planar projection for the poles.
 - One mask using the planar projection uvs.
@@ -41,9 +40,9 @@ A texture projection over a sphere will always contain a distortions at the pole
 
 !!! warning
 
-    Special care should be taken when laying the uvs for the second/planar uvs, the texel density in this projection should match as closelly the one from the first/equirectangular uvs, otherwise some artifacts will be visible with some height field combinations.
+    Special care should be taken when laying the uvs for the second/planar uvs, the texel density in this projection should match as closelly the one from the first/equirectangular uvs, otherwise some artifacts will be visible on close inspection.
 
-Blending of the texture is done with two simple functions[^1]: 
+Blending of the texture is done with two functions[^1]: 
 
 ```hlsl title="mixfloat.hlsl"
 float mixfloat(float base, float blend, float opacity)
@@ -63,7 +62,7 @@ float blendprojections(float equirect, float planar, float mask, float vertex_r)
 ```
 
 ## Blend height maps
-With the planets seams solved, the next step was to produce a couple of height maps for dwarf planets (no continents, no erosion). The texture channel were used in the following manner:
+Once the seams problem was solved, the next step was to produce a couple of height maps for the most simple type of planets, dwarf planets (no continents, no erosion). The texture channels for this type were used in the following manner:
 
 <figure class="video_container">
   <video controls="true" allowfullscreen="true">
@@ -75,7 +74,7 @@ With the planets seams solved, the next step was to produce a couple of height m
 
 !!! note inline end
 
-    Bit depth is important, for a mobile platform, the maps were created at 8bit, with a good histogram distribution. For PC/Console 16bits would be normal.
+    Bit depth is important, for a mobile platform, the maps were created at 8bit, with a good histogram distribution. For PC/Console 16bits is advised.
 
 | channel | use                 | uv channel |
 |---------|---------------------|------------|
@@ -83,7 +82,7 @@ With the planets seams solved, the next step was to produce a couple of height m
 | g       | planar projection   | 1          |
 | b       | poles mask          | 1          |
 
-To create the planets variations from a limited set of height maps, two sets of textures are blended together using simple linear interpolations. the following functions are the core of blending two sets.
+To create the planets variations from a limited set of height maps, two sets of textures are blended together using simple linear interpolations. the following functions are at the core of blending two texture sets.
 
 ```hlsl title="heightblend.hlsl"
 float heightblend(float height1, float height2, float blend)
@@ -105,7 +104,7 @@ float lerpheights(float height1, float height2, float blend, float time)
 }
 ```
 
-The color components in the fragment shader are obtained from feeding the result of the blended heightmap as an UV coord input in a color ramp. The ramp is exposed to the artist as a parameter.
+The color components in the fragment shader are obtained from feeding the result of the blended height map as an UV coordinate input in a color ramp. At the end the ramp is exposed to the artist as a parameter.
 
 ## Land masses
 
@@ -116,14 +115,14 @@ The color components in the fragment shader are obtained from feeding the result
   <figcaption>Terrestrial and dwarfs mixed</figcaption>
 </figure>
 
-Terrestrial planets have the additional feature of having clearly defined land masses, the product of tectonics. These land masses can be generated using a low frequency texture noise. Early tests using noise functions resulted in spotty and fragmented continents. Instead a very low resolution land mass generation system was created.
+Terrestrial planets have the additional feature of having clearly defined land masses, as the product of tectonics. These land masses can be generated using a low frequency texture noise, but early tests using only noise functions resulted in spotty and fragmented continents. Instead, a very low resolution land mass generation system was created, giving better results.
 
 The underlying process of this low frequency generation system can be summarized as follows:
 
   1.  Distribute a number of points over a hex tiled sphere
-  2.  Each point is the start of a continent, with an integer id.
+  2.  Each point is the start of a continent, marked with an integer id.
   3.  Expand the frontiers of the continent using a bread first search
-  4.  When two continents find each other in a border tag the collision, an resolve the ownership using the minimum id.
+  4.  When two continents find each other in a border, tag the collision, and resolve the ownership using the minimum id.
   5.  The tagged collisions will be used as subduction and collision zones to raise and lower the masses
 
 <figure class="video_container">
@@ -133,7 +132,7 @@ The underlying process of this low frequency generation system can be summarized
   <figcaption>Plates generation</figcaption>
 </figure>
 
-The above process is meant to be used as a starting point for the land mass creation process, and is a gross oversimplification of the nature of plate tectonics.
+The above process is meant to be used as a starting point for land masses creation, and it is a gross oversimplification of the nature of plate tectonics.
 
 !!! info
 
@@ -148,12 +147,14 @@ The above process is meant to be used as a starting point for the land mass crea
   <figcaption>Flow at x3 speed</figcaption>
 </figure>
 
-Gas giants are very different in their surface properties, they do not play well with the techniques described above. The reasons include: discontinuities in flow of gaseous features, different structures that change overtime. For these main reasons a different approach was used.
+Gas giants are very different in their surface properties and they do not work with the techniques described above. The reasons include: discontinuities in the flow of gaseous features and structures that change overtime. For these main reasons a different approach was used.
 
 The following fragment shader is basically the code version of a blender shader described by the Entagma team in [Building a Flowmap Shader in Blender](https://entagma.com/building-a-flowmap-shader-in-blender-using-flowmap-data-from-houdini/), but with two *very important modifications*:
 
   * Sampling a high frequency texture with a different speed
   * Overlay the high frequency texture over the low frequency texture
+
+The key insight here is to avoid simulating high quality/resolution vector fields for the flow of the gases, instead a tileable low resolution vector field was created to drive the distortion of two textures, a base low frequency gaseous features texture, and a high frequency details texture.
 
 === "Distort UVs"
     ```hlsl title="jflow.hlsl"
@@ -222,19 +223,21 @@ The following fragment shader is basically the code version of a blender shader 
 
 !!! warning
     
-    The automatic gamma correction for the flow map must be deactivated, when exporting from the DCC program, and when imported in the engine. The gamma must be set to 1.0
+    For the vector field / flow map, the export and import of the texture shoudl be made with a gamma set at 1.0.
 
 ## Baking
 
-After all the materials have been processed, depending on the platform and graphics settings the textures are baked and reprojected to avoid unnecessary calculations, albeit with some quality loss.
+After all the materials are processed, and depending on the platform and graphics settings the textures are baked and reprojected to avoid unnecessary calculations in each frame, albeit with some quality loss.
 
 ## Future improvements
 
-After using the system in production, some areas could be improved. To solve the seams, we have to use extra texture samplers, on alternatives could be to use an stacked image array, an only use one sampler, but this is not supported across all devices, so older/weaker devices might be cut.
+After using the system in production, some areas could be improved. To hide the seams, I used two extra texture samplers. One alternative could be to use an stacked image array, an only use one sampler, but this is not supported across all devices, so older/weaker devices might be cut.
 
 ## Collaboration and credits
 
-The work done in this feature included the generation of textures, all the planet surface shaders, the atmosphere shader, the classes to load and unload the textures from memory, material handling and an small planet designer editor.
+The work done in this feature included the generation of all the textures, the planet surface shaders, the atmosphere shader (not covered here), the classes to load and unload the textures from memory, material handling, and an small planet designer editor.
+
 This work was further expanded by other team members to include rings around the planets, and the baking of the atmosphere as a texture to avoid unnecessary calculations.
+The final look of the planets, including colors, continents, atmosphere settings, etc, were edited by members of the team department.
 
 [^1]: [Height blending functions used as reference](http://untitledgam.es/2017/01/height-blending-shader/) actual code is different
