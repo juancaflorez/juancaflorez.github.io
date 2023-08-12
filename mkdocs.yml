@@ -1,20 +1,23 @@
 # Project Info
-site_name: Environment Tech Art
+site_name: Environment Technical Art
 site_author: Juan Florez
 copyright: Copyright &copy; 2023 Juan Florez
 
 # Site Config
-
 use_directory_urls: true
 
 # Theme
 theme:
   name: material
   features:
+    - navigation.top
     - navigation.indexes
     - navigation.sections
+    - navigation.instant
     - navigation.tabs
     - navigation.tabs.sticky
+    - navigation.path
+    - toc.follow
   palette:
     # Palette toggle for light mode
     - scheme: default
@@ -27,9 +30,15 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+  icon:
+    logo: fontawesome/solid/seedling
 
 plugins:
   - tags
+  - search
+  - awesome-pages:
+      collapse_single_pages: false
+
 
 extra:
   consent:
@@ -44,6 +53,13 @@ extra:
       analytics:
         name: Google Analytics
         checked: false
+
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/juancaflorez/
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/juancaflorez/
+
 
 extra_css:
   - css/neoteroi.css
@@ -60,21 +76,21 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
+      extend_pygments_lang:
+        - name: ue5
+          lang: cpp
+        - name: vex
+          lang: glsl
+        - name: hscript
+          lang: glsl
+
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.details
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.emoji
   - admonition
   - neoteroi.cards
 
-# nav:
-#   - Home: 'index.md'
-#   - Long read:
-#       - long-read/index.md
-#       - Houdini and Flecs: long-read/hou-flecs.md
-#       - Runtime Map : long-read/map-graph.md
-#       - Mobile Planets : long-read/planets-bgr.md
-#   - Houdini: 'houdini/index.md'
-#   - About: 'about/index.md'
