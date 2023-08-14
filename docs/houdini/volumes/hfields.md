@@ -1,4 +1,4 @@
-# Height Fields
+# Height fields
 
 ## From Height Fields to COPs and back
 
