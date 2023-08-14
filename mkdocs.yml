@@ -1,5 +1,5 @@
 # Project Info
-site_name: Environment Technical Art
+site_name: Juan Florez
 site_author: Juan Florez
 copyright: Copyright &copy; 2023 Juan Florez
 
@@ -9,11 +9,12 @@ use_directory_urls: true
 # Theme
 theme:
   name: material
+  # theme overrides
+  custom_dir: material
+  # features
   features:
     - navigation.top
     - navigation.indexes
-    - navigation.sections
-    - navigation.instant
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.path
@@ -33,11 +34,12 @@ theme:
   icon:
     logo: fontawesome/solid/seedling
 
+
 plugins:
-  - tags
-  - search
   - awesome-pages:
       collapse_single_pages: false
+  - search
+  - tags
 
 
 extra:
@@ -82,7 +84,7 @@ markdown_extensions:
         - name: vex
           lang: glsl
         - name: hscript
-          lang: glsl
+          lang: bash
 
   - pymdownx.inlinehilite
   - pymdownx.snippets
@@ -90,7 +92,8 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.tabbed:
       alternate_style: true
-  - pymdownx.emoji
   - admonition
   - neoteroi.cards
-
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg

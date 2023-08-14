@@ -1,4 +1,5 @@
 nav:
   - Home: index.md
   - Long Read: long-read
+  - Houdini: houdini
   - About: about
