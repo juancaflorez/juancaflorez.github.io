@@ -8,3 +8,16 @@
 ```hscript
 opdef:..?name
 ```
+
+
+## Building large networks
+
+### Autobindings
+
+When building large networks name of parameters are likely to change, for this case Houdini gives us autobindings for VOPs and wrangle nodes.
+
+Autobindings map an external variable name to a internal one inside the wrangle/vop
+
+![auto 01](/rsr/hdas/autobindings_01.png)
+![auto 02](/rsr/hdas/autobindings_02.png)
+

@@ -1,7 +1,6 @@
 # Vex
-
 ## Operators
-
+    
 ### Ternary
 
 ``` vex
@@ -9,7 +8,6 @@ v@Cg = (grp==0) ? {1.0, 0.0, 0.0} : {0.0 , 1.0 , 0.0};
 ```
 
 ## VEX Snippets
-
 ### Visualize a primitive vector attribute as a point
 
 vector primitive attributes can\'t be visualized as points, this wrangle
@@ -141,20 +139,18 @@ i@near = near;
 
 Table 0:
 
-  ----- ------------
-  P     ownerId
-  xyz   someString
-  ----- ------------
+| P   | ownerId    |
+|-----|------------|
+| xyz | someString |
 
 Many positions with a name
 
 Table 1:
 
-  --------- -------
-  ownerId   Cd
-  idA       1,1,1
-  idB       0,0,0
-  --------- -------
+| ownerId | Cd    |
+|---------|-------|
+| idA     | 1,1,1 |
+| idB     | 0,0,0 |
 
 Few colors, with a name associated this is like a dictionary, it will
 only work if the keys are unique
@@ -204,7 +200,7 @@ for (int i=0; i< i@numprim ; i++)
 
 ### Curves
 
-[vex --- John Svensson](https://www.johnsvensson.se/vex-houdini/)
+The following curves code was obtained from [vex --- John Svensson](https://www.johnsvensson.se/vex-houdini/)
 
 1.  Curve U Map
 
@@ -429,61 +425,6 @@ int attrib_val = prim(0, attribute_name, @primnum);
 int ptn = addpoint(0,@P);
 setpointattrib(0, attribute_name, ptn, attrib_val, "set");
 removeprim(0, @primnum, 1);
-```
-
-### Half edges
-
-1.  Half edges problems and inconsistent geometry
-    [[ATTACH]{.smallcaps}]{.tag tag-name="ATTACH"}
-
-    When using the half edges data structure, make sure to have
-    consistent normals and vertex order. In this example the mesh is
-    correct
-
-    ![](attachment:_20230715_171404hedges_01.png)
-
-    Now in this example the reverse node deactivated, and the normals
-    orientation and the vertex order is inconsistent:
-
-    ![](attachment:_20230715_172343hedges_02.png)
-
-### Find border point using half edges
-
-```vex
-// Find if point is border using half edges
-// only works on triangular meshes
-i@is_border = 0;
-int hedge = pointhedge(0, @ptnum);
-//i@src = hedge_srcpoint(0, hedge);
-//i@dst = hedge_dstpoint(0, hedge);
-int dst = hedge_dstpoint(0, hedge);
-int count = hedge_equivcount(0, hedge);
-if (count == 1){
-    setpointattrib(0, 'is_border', dst, 1 ,"set");
-    i@is_border = 1;
-    return;
-}
-
-int equiv = hedge_nextequiv(0, hedge); //turn
-int hnext = hedge_next(0, equiv); //next
-count = hedge_equivcount(0, hnext);
-if (count == 1)
-{
-    dst = hedge_dstpoint(0, hnext);
-    setpointattrib(0, 'is_border', dst, 1 ,"set");
-    i@is_border = 1;
-    return;
-}
-hnext = hedge_next(0, hedge); //the other next
-hnext = hedge_next(0, hnext);
-count = hedge_equivcount(0, hnext);
-if (count == 1)
-{
-    i@is_border = 1;
-    return;
-}
-
-
 ```
 
 ### Rotate a vector around an axis

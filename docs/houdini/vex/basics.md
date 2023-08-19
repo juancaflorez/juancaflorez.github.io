@@ -1,5 +1,5 @@
 
-## Basics
+# Basics
 
 **The most important thing to learn about vex** [HoudiniVex -
 Parallel](https://www.tokeru.com/cgwiki/index.php?title=HoudiniVex#Parallel_processing_part_2)
@@ -10,180 +10,121 @@ Parallel](https://www.tokeru.com/cgwiki/index.php?title=HoudiniVex#Parallel_proc
 
 A good example would be breadth search in a parallel context
 
-### Basic syntax
+## Create
 
-1.  Set a new vector
+* Set a new vector / Create a new vector
 
-    New vector
+```vex
+v@Cd = {0,0,0};
+v@P = set(0,some_var,0);
+```
 
-    ```vex
-    v@Cd = {0,0,0};
-    v@P = set(0,some_var,0);
-    ```
+* Access components of a vector
 
-2.  Access components of a vector
+```vex
+v@P.y
+```
 
-    ```vex
-    v@P.y
-    ```
+* Create array attribute using vex
 
-3.  Create array attribute using vex
+```vex
+// for this example running in detail mode
+string unique[] = uniquevals(0, "prim", "name");
+s[]@unique = unique;
+i@maxunique = len(unique);
+```
 
-    ```vex
-    // for this example running in detail mode
-    string unique[] = uniquevals(0, "prim", "name");
-    s[]@unique = unique;
-    i@maxunique = len(unique);
-    ```
+## For Loops
 
-4.  For loops
+### for
 
-    for
+```vex
+// in the detail context
+for (int i=0; i< i@numprim ; i++){
+    if (prim(0, "plate", i) > 0) push(found, i);
+}
+```
 
-    ```vex
-    // in the detail context
-    for (int i=0; i< i@numprim ; i++)
-    {
-        if (prim(0, "plate", i) > 0) push(found, i);
-    }
-    ```
+### foreach
 
-    foreach
+//TODO
 
-5.  Groups
+## Groups
 
-    1.  Create a group
+### Create a group
 
-        the \"group\_\" tells vex that is a group
+the "group\_" tells vex that is a group  
+```vex
+i@group_visited;
+i@group_frontier;
+```
 
-        ```vex
-        i@group_visited;
-        i@group_frontier;
-        ```
+### Add point to a group
+```vex
+setpointgroup(0, "grp_name", @ptnum, 1);
+```
+### Expressions
+[Groups expression Node](https://www.artstation.com/blogs/jorgelega/7m1r/houdini-10-useful-vex-snippets-for-group-expression-node)
+Randomize
+```vex
+rand(@elemnum) > chf("Amount")
+```
+### Negate group
 
-    2.  Add point to a group
+As an expression "^somegrp"
+```vex
+//All but grp
+^grp
+```
 
-        ```vex
-        setpointgroup(0, "grp_name", @ptnum, 1);
-        ```
+### Get all the points in a group
 
-    3.  Expressions
+```vex
+// get all the points is in the target group 'target_pts'
+// make sure the group is a point group
+int targets[] = expandpointgroup(0, "target_pts", "unordered");
+```
+### Ad-hoc groups
 
-        [Groups expression
-        Node](https://www.artstation.com/blogs/jorgelega/7m1r/houdini-10-useful-vex-snippets-for-group-expression-node)
+source file: corruption.hiplc
+In point mode
+```vex
+// I will use this as a tag to create an adhoc group down stream
+s@prim_owner = itoa(@primnum); 
+// itoa will cast int to a string
+```
 
-        Randomize
+### How to use the ad-hoc grp
 
-        ```vex
-        rand(@elemnum) > chf("Amount")
-        ```
+```vex
+//to limit the nearpts search to only consider the points
+//of the current primitive,
+//an ad-hoc groups is created from a string tag
+string s_primnum= itoa(@primnum); // cast int to string
+string grp = "@prim_owner="+s_primnum; // build group expression
+// grp is used to limit the search
+int nearpts[] = nearpoints(0, grp, v@hingedir, 1, 3);
+if (len(nearpts) == 0) return;
+vector p0 = point(0,'P',nearpts[0]);
+vector p1 = point(0,'P',nearpts[1]);
+vector pivot = (p0+p1)/2; // the middle point
+v@hinge = pivot;
+// export points
+i[]@nearpts = array(nearpts[0], nearpts[1]);
+```
 
-        Modulo
+### More ad-hoc groups
 
-        ```vex
-        fit01(@elemnum % chi("Amount"),0,1)
-        ```
+To create groups on the fly using vex, there are several
+functions, one vor each type of context
+[expandpointgroup](https://www.sidefx.com/docs/houdini/vex/functions/expandpointgroup.html)
 
-        Normals
-
-        ```vex
-        //If your prim starts with 0 it might not be selected. You can easily fix it with a sort node from Vertex order and then shift.//Select Y Normal add negative before the @N to flip
-        @N.y % @elemnum
-        //Select X Normal
-        @N.x % @elemnum
-        //Select Z Normal
-        @N.z % @elemnum
-        ```
-
-        Randomize and mix normals
-
-        ```vex
-        //Mix Normals XYZ with Random
-        @N.x*(rand(@elemnum) > chf("Amount"))
-        @N.y*(rand(@elemnum) > chf("Amount"))
-        @N.Z*(rand(@elemnum) > chf("Amount"))
-        ```
-
-        MODULO AND MIX NORMALS
-
-        ```vex
-        //Mix Normals XYZ with Modulo
-        fit01(@elemnum % chi("Amount")* @N.x,0,1)
-        fit01(@elemnum % chi("Amount")* @N.y,0,1)
-        fit01(@elemnum % chi("Amount")* @N.z,0,1)
-        ```
-
-    4.  Negate group, All but
-
-        As an expression \"\* ^somegrp^\"
-
-        ```vex
-
-        //All but grp
-        // \ to scape emacs bullet
-        \* ^grp
-
-        ```
-
-    5.  Get all the points in a group
-
-        ```vex
-        // get all the points is in the target group 'target_pts'
-        // make sure the group is a point group
-        int targets[] = expandpointgroup(0, "target_pts", "unordered");
-        ```
-
-    6.  Ad-hoc groups
-
-        source file: corruption.hiplc
-
-        In point mode
-
-        ```vex
-        // I will use this as a tag to create an adhoc group down stream
-        s@prim_owner = itoa(@primnum);
-        // itoa will cast int to a string
-        ```
-
-        ```vex
-        // to limit the nearpts search to only consider the points
-        //of the current primitive,
-
-        //an ad-hoc groups is created from a string tag
-        string s_primnum= itoa(@primnum); // cast int to string
-        string grp = "@prim_owner="+s_primnum; // build group expression
-        // grp is used to limit the search
-
-        int nearpts[] = nearpoints(0, grp, v@hingedir, 1, 3);
-        if (len(nearpts) == 0) return;
-
-        vector p0 = point(0,'P',nearpts[0]);
-        vector p1 = point(0,'P',nearpts[1]);
-        vector pivot = (p0+p1)/2; // the middle point
-
-        v@hinge = pivot;
-
-        // export points
-        i[]@nearpts = array(nearpts[0], nearpts[1]);
+- expandprimgroup
+- expandpointgroup
 
 
-        ```
-
-    7.  More ad-hoc groups
-
-        To create groups on the fly using vex, there are several
-        functions, one vor each type of context
-
-        [expandpointgroup](https://www.sidefx.com/docs/houdini/vex/functions/expandpointgroup.html)
-
-        -   expandprimgroup
-        -   expandpointgroup
-    
 ## Reference
-
 Most of the tables were obtained from: [cgwiki](https://www.tokeru.com/cgwiki)
-
-
 ### General
 
   | type  | name     | description                         |
@@ -288,3 +229,4 @@ d@mydict = {}; // dict, can only instantiate as empty type
 d@mydict['key'] = 'value'; // can set values once instantiated
 
 ```
+    
