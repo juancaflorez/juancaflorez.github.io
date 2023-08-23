@@ -1,24 +1,54 @@
-{#-
-  This file was automatically generated - do not edit
--#}
 {% extends "main.html" %}
 {% block tabs %}
   {{ super() }}
-  <style>.md-header{position:initial}.md-main__inner{margin:0}.md-content{display:none}@media screen and (min-width:60em){.md-sidebar--secondary{display:none}}@media screen and (min-width:76.25em){.md-sidebar--primary{display:none}}</style>
+  <style>
+   .mdx-container {
+     padding-top: .0rem;
+     /* background: linear-gradient(to bottom, var(--md-primary-fg-color), hsla(160deg,47%,55%,0) 40%) */
+     background: black;
+   }
+
+   .mdx-hero {
+     display: flex;
+     align-items: center;
+     margin: 32px 2.8rem;
+     color: var(--md-primary-bg-color);
+     justify-content: center;
+   }
+
+   .mdx-hero__content {
+     max-width: 22rem;
+     margin-top: 3.5rem;
+     margin-bottom: 3.5rem;
+     margin-left: 1.0rem;
+     margin-right: 4.0rem;
+     align-items: center;
+   }
+
+   .mdx-hero h1 {
+     margin-bottom: 1rem;
+     color: currentColor;
+     font-weight: 700;
+   }
+
+   .mdx-hero__image{
+     width:17rem;
+     order:1;
+     padding-right: 2.5rem;
+    }
+  </style>
+
   <section class="mdx-container">
     <div class="md-grid md-typeset">
       <div class="mdx-hero">
-        <div class="mdx-hero__image">
-          <img src="assets/images/illustration.png" alt="" width="1659" height="1200" draggable="false">
-        </div>
         <div class="mdx-hero__content">
-          <h1>Technical documentation that just works</h1>
-          <p>{{ config.site_description }}. Set up in 5 minutes.</p>
+        <h1>Technical Art Documentation</h1>
+          <p>{{ page.content }}</p>
           <a href="{{ page.next_page.url | url }}" title="{{ page.next_page.title | e }}" class="md-button md-button--primary">
-            Quick start
+            Long Read Docs
           </a>
-          <a href="{{ 'insiders/' | url }}" title="Material for MkDocs Insiders" class="md-button">
-            Get Insiders
+          <a href="{{ 'houdini' | url }}" title="Notes" class="md-button">
+            Notes
           </a>
         </div>
       </div>
@@ -26,4 +56,4 @@
   </section>
 {% endblock %}
 {% block content %}{% endblock %}
-{% block footer %}{% endblock %}
+{% block site_nav %}{% endblock %}
