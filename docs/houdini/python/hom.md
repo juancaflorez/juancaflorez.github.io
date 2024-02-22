@@ -14,7 +14,12 @@ geo.setGlobalAttribValue("parents", parent_dict)
 ```
 
 
+## Get a channel or parameter
 
+```python
+evalParm("../CTRL_comb_version/comb_version")
+## is the same as ch('node/channel')
+```
 
 
 ## When to use python expression in channels
@@ -23,7 +28,7 @@ For easy connections is better to use hscript, for more advanced and verbose stu
 
 A good comparison [here](https://www.reddit.com/r/Houdini/comments/8fyt1q/bby_no_longer_working_python_alternative)
 
-```bash
+```hscript
 //hscript
 bbox(0, D_YMAX)
 ```
@@ -34,9 +39,7 @@ hou.pwd().inputs()[0].geometry().boundingBox().maxvec()[1]
 
 So, try to use hscript for simple stuff, even if SideFx says hscript is being deprecated
 
-
-
-    [Create Parameters in Houdini with Python](https://gfxhacks.com/create-parameters-in-houdini-with-python/)
+[Create Parameters in Houdini with Python](https://gfxhacks.com/create-parameters-in-houdini-with-python/)
 
 
 ## Python Get node
@@ -159,3 +162,15 @@ def export(kwargs):
         # json.dump(dict_obj, f, indent=4)
         json.dump(dict_obj, f, indent=4)
 ```
+## Reload or cook a node using a callback
+
+Using a button in a parameter interface editor, select the button, find the callback script field and add the following
+
+```python
+hou.node(".").cook(force=True)
+```
+## Python states
+https://aaronsmith.tv/Case-Studies
+
+[A live session on building a tool with Python States in Houdini 18](https://www.youtube.com/watch?v=nS4FSMEas-I)
+

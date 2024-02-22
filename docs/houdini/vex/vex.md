@@ -99,7 +99,7 @@ printf("%g" , numpnts);
 
 ### Bounding box from second input (1)
 
-``` {.c org-language="C"}
+```vex
 // Get bounding box from second input
 vector bbox = getbbox_max(1);
 // set/create new vector with only one compoment
@@ -441,4 +441,132 @@ vector normal = normalize(@N);
 matrix mat = instance(@P, normal);
 rotate(mat, amount ,axis);
 @N = @N*mat;
+```
+
+### From a primitive write to vertices
+```vex
+// over primitives
+int vertices[] = primvertices(0, @primnum);
+vector zero = {0,0,0};
+foreach(int vtx ; vertices){
+    setvertexattrib(0, "uv", vtx, -1, zero, "set");
+}
+```
+Why a -1, and the vertex num as the primnum?
+In this example the vertices are LINEAR vertices. To use the setvertexattrib function take into account:
+
+> To use a linear vertex index, set the prim_num to the linear vertex number and set vertex_num to -1. Note that this is different from how most other vertex functions work.
+[setvertexattrib docs](https://www.sidefx.com/docs/houdini/vex/functions/setvertexattrib.html)
+### Get interpolated value from pcloud
+```vex
+// run over points
+int samples = chi("samples");
+float radius = chf("radius");
+
+int handle = pcopen(1, "P", @P, radius, samples);
+vector rest = pcfilter(handle, 'rnml');
+v@rnml = rest;
+
+```
+### Interpolated values from xyzdist and primuv
+
+source: [The joy of xyzdist() and primuv()](https://www.toadstorm.com/blog/?p=465)
+
+``` vex
+// run over points
+int posprim;
+vector param_uv;
+float maxdist = 10;
+float dist = xyzdist(1,@P,posprim,param_uv,maxdist);
+       
+float curveu = primuv(1,"curveu",posprim,param_uv);
+vector tangentu = primuv(1,"tangentu",posprim,param_uv);
+f@curveu = curveu;
+v@tangentu = tangentu;
+
+```
+
+
+### Coolkids operator
+Rotate a point in place, using a matrix
+```vex
+// run over points
+float angle = ch('angle');
+matrix3 rotm = ident();
+vector axis = {0,1,0};
+vector pivot = {0,0,0};
+rotate(rotm, angle, axis);
+
+vector4 orient;
+vector scale, postrot;
+matrix xform;
+scale = 1;
+postrot = 0;
+
+vector normal = @N;
+
+orient = quaternion(rotm);
+xform = instance( pivot, normal, scale, postrot, orient, pivot);
+
+@P *= xform;
+```
+### Find if a primitive has incorrect winding order
+```vex
+// run over primitives
+// ancillary value 1, is the reference point/prim normal
+
+vector prim_normal = prim_normal(0, i@primnum, vector(0.0));
+vector centroid_normal = point(1, "N", 0);
+
+float normals_dot = dot(prim_normal, centroid_normal);
+f@ndot = normals_dot;
+
+if (normals_dot < 0)
+{
+    setprimgroup(0, "reversed" , @primnum, 1, "set");
+}
+```
+After use a reverse sop node to only reverse the prims in the 'reversed' group
+[Adjust Winding Order procedurally](https://www.sidefx.com/forum/topic/81452/#post-350857)
+[Reversing and Correcting normals](https://www.sidefx.com/tutorials/reversing-correcting-normals-part-3-reversing-point-normals-for-orientation/)
+
+### Create frame for one segment poly curve
+
+The polyframe sop doesn't work with curves primitives with only one segment (2 points)
+
+```vex
+//run over points
+vector up = {0,1,0};
+vector bitangent = cross(up, v@tangentu); // generated from resample node
+v@tangentv = bitangent;
+v@N = cross(v@tangentu, bitangent);
+```
+
+### Orient from normal, create frame, postrot
+
+```vex
+//run over points
+vector tan_u = cross(v@N, {0,1,0});
+vector tan_v = cross(tan_u, v@N);
+v@tangentu = tan_u;
+v@tangentv = tan_v;
+vector4 orient = quaternion(maketransform(v@N, tan_v));
+vector4 extrarot = quaternion(angle, {1,0,0});
+orient = qmultiply(orient, extrarot);
+p@orient = orient;
+```
+
+
+### Orient and rotate
+[cgwiki/rotations](https://www.tokeru.com/cgwiki/JoyOfVex17#Make_this_rotation_thing_do_what_we_want "rotations")
+[voxel-pixel/orient](https://voxelpixel.xyz/2020/06/04/houdini-rotations-look-at/ "rotate")
+[vfxbrain rotations](https://vfxbrain.wordpress.com/2018/12/04/using-orient-attribute-with-instances/ "rotations")
+
+
+### Math constants : Epsilon
+Check
+/opt/hfs20.0/houdini/vex/include
+math.h
+```vex
+#define M_TOLERANCE	0.0001
 ```

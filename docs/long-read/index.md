@@ -7,6 +7,12 @@ These documents are linked to smaller and specific snippets in the Houdini and U
 
 ::cards:: image-bg cols=3
 
+
+- title: Synth Rocks
+  content: Growth rocks from heightfields
+  image: ./rsr/cards/synthrcks.png
+  url: synth-rocks.md
+  
 - title: Houdini to Flecs
   content: Send pcloud data to Unreal and Flecs
   image: ./rsr/cards/houflecs.png
