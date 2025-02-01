@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/rss/rss.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Juan</title><description>Technical Artist</description><link>https://juancaflorez.github.io/</link><language>en-us</language><item><title>Background Art, in Space</title><link>https://juancaflorez.github.io/short_form/bg_art/</link><guid isPermaLink="true">https://juancaflorez.github.io/short_form/bg_art/</guid><description>Background Environment Art</description><pubDate>Mon, 29 Jul 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Intro&lt;/h1&gt;
+&lt;p&gt;This short project dives into the now-defunct Homeworld Mobile game and the background assets crafted for it. Given the constraints of mobile platforms, I worked on several tools and assets that helped bring its environments to life. Here&apos;s a look at what we built.&lt;/p&gt;
+&lt;h1&gt;Backgrounds&lt;/h1&gt;
+&lt;p&gt;Homeworld is a classic in the space RTS genre, renowned for its serene and evocative environments. In the original 1998 release, the backgrounds weren’t simply images but meticulously crafted vertex-colored geometry, designed to avoid color compression issues in the gradients. These meshes were created and hand-painted by artists to achieve the desired aesthetic.&lt;/p&gt;
+&lt;p&gt;For this version, the art team chose to maintain a similar approach, but with a modern twist: the initial background images were generated using a volumetric shader in Blender.&lt;/p&gt;
+&lt;p&gt;To streamline the creation process and ensure consistency across locations, I developed a Python addon. This tool allowed artists to control the shader without needing to navigate the complexities of volumetric shading. Additionally, the addon managed the star system locations and facilitated reading and writing of CSV/JSON files, ensuring a smooth and cohesive workflow.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/stg_hwm_blender.avif&quot;
+alt=&quot;nebulas and planets&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Nebulas and Planets&lt;/h1&gt;
+&lt;p&gt;The next elements generated using volumetrics were the nebulas. This process was automated, combining various VDBs and light configurations to produce a contact sheet. From this sheet, the most visually appealing combinations were selected and rendered at a higher resolution.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/stg_nebulas_col.avif&quot;
+alt=&quot;nebulas and planets&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;The next challenge was developing a planet generation system capable of creating three distinct types of planets: dwarf planets, which are predominantly cratered; terrestrial planets, featuring water and clouds; and Jovian planets, characterized by visible gas flows. Additionally, the system needed to support the generation of atmospheres for all planet types.&lt;/p&gt;
+&lt;p&gt;For dwarf and terrestrial planets, the system employed a height map mixer designed to handle distortion at the poles caused by the planet&apos;s spherical projection. For Jovian planets, the system facilitated the mixing of flow maps at various frequencies. All of this had to be accomplished using minimal textures, due to GPU memory constraints on mobile devices.&lt;/p&gt;
+&lt;p&gt;All these features where created by me but additional support was given by a graphics engineer to bake the atmosphere into a single quad to
+avoid costly full screen shader calculations. Other design consideration was the size of the planets in the screen, this aspect restricts the size of the source maps used by the shaders, in this case the planets had an upper cap of one third of target screen resolution size.&lt;/p&gt;
+&lt;p&gt;The following preview is scaled beyond this restriction.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/stg_planets_dsg.avif&quot;
+alt=&quot;nebulas and planets&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/stg_bg_elements.avif&quot;
+alt=&quot;nebulas and planets&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Runtime Procedural Map&lt;/h1&gt;
+&lt;p&gt;The star systems locations used in generating the backgrounds also served as inputs for creating a galaxy map. This map represented the player&apos;s clan&apos;s territorial conquests, evolving in real-time during gameplay. Consequently, the map needed to be generated dynamically at runtime.&lt;/p&gt;
+&lt;p&gt;To keep things running smoothly, the map&apos;s geometry was built as a single piece, cutting down on excessive draw calls. All the necessary data was baked right into the mesh, which fed into a shader that handled faction colors and banners.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/stg_map_game.avif&quot;
+alt=&quot;runtime procedural map&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Technical Bits&lt;/h1&gt;
+&lt;p&gt;import MasonryLayout from &apos;../../components/Masonry.astro&apos;;&lt;/p&gt;
+&lt;p&gt;&amp;lt;MasonryLayout images={[
+{ src: &quot;/assets/images/stg_galaxy_colors.avif&quot;, alt: &quot;galaxy addon&quot; },
+{ src: &quot;/assets/images/stg_map_shapes.avif&quot;, alt: &quot;map find poles&quot; },
+{ src: &quot;/assets/images/stg_map_graph.avif&quot;, alt: &quot;map find poles&quot; },
+]} /&amp;gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;For the Blender background generator the addon served as a &quot;rig&quot; to the shader, abstracting the complexity of the internal shader graph.&lt;/li&gt;
+&lt;li&gt;For the map generation the most important input was just point coordinates, with this in mind it was decided that the fastest way to create geometry was to use a Delaunay triangulation library [^1]. This in turn imposed a look in the map that can be hard to shape from the perspective of an artist. For this purpose additional tools were provided to manipulate the points and shape the look.
+Some territories in the map could become fractured and have concave shapes, making the location of the territory banner&apos;s a challenge[^3], for this problem I implemented an algorithm to find the center of any arbitrary polygon following the code from Mapbox[^4]&lt;/li&gt;
+&lt;li&gt;The map data structures were made up of only integers pointing to three different arrays an their indices (points, edges, triangles). Internally the delaunay graph (in this implementation) uses the &lt;em&gt;half edges&lt;/em&gt; data structure[^2]. This structure allows us to walk the geometry and to find relations between the two graphs easily. (delaunay and voronoi)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;Acknowledgments and Credits&lt;/h1&gt;
+&lt;p&gt;For the planet system, I teamed up with an intern graphics engineer and the lead artist to keep the frame time budget and texture storage limits. Their expertise was invaluable; without their support, delivering a performant background environment wouldn’t have been possible.&lt;/p&gt;
+&lt;p&gt;Homeworld Mobile was an MMO developed by Stratosphere Games and published by Gearbox Publishing.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;Footnotes&lt;/h1&gt;
+&lt;p&gt;[^1]: Redblob games has an easy to follow article about the &lt;a href=&quot;https://mapbox.github.io/delaunator/&quot;&gt;Delaunator&lt;/a&gt; library
+[^2]: On graphs and the &lt;a href=&quot;https://cs184.eecs.berkeley.edu/sp19/article/15/the-half-edge-data-structure&quot;&gt;half edges data structure&lt;/a&gt;
+[^3]: Traditional algorithms to find the center of a shape &lt;a href=&quot;https://graphstream-project.org/doc/Algorithms/Centroid/&quot;&gt;Centroid&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/Straight_skeleton&quot;&gt;Straigh Skeleton&lt;/a&gt;
+[^4]: On how to find the center of a concave shape efficiently &lt;a href=&quot;https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc&quot;&gt;Polylabel explanined&lt;/a&gt; and
+&lt;a&gt;Poles of inaccessibility&lt;/a&gt; concept&lt;/p&gt;
+</content:encoded><author>Juan</author></item><item><title>Level Generation</title><link>https://juancaflorez.github.io/short_form/level_gen/</link><guid isPermaLink="true">https://juancaflorez.github.io/short_form/level_gen/</guid><description>WFC Algorithm with a twist</description><pubDate>Sun, 04 Aug 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Intro&lt;/h1&gt;
+&lt;p&gt;The Desolation was a cooperative looter-shooter designed for both mobile and consoles. The game featured a variety of environments, with a primary focus on underground, dungeon-like levels.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/stg_deso_demo.avif&quot;
+alt=&quot;game demo&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Level Description and Generation&lt;/h1&gt;
+&lt;p&gt;For this game, I collaborated with artists and engineers to develop a level generation system capable of reproducing handcrafted levels and at the same time procedurally generate levels using preassembled tiles. This work involved designing shared data structures, integration with the deterministic multiplayer engine[^1], and the creation of tools to aid the construction of the tileable assets.
+At the heart of this system was a customized Wave Function Collapse (WFC) solver[^2], providing precise control over the constraints used by the level generator.&lt;/p&gt;
+&lt;h2&gt;Modes&lt;/h2&gt;
+&lt;p&gt;In level generation, it is often desirable for game designers and level designers to have control over paths, hubs, and areas. To achieve this, the level solver was designed to operate in two modes: one where specific areas were entirely dictated by the designer and treated as immovable constraints, and another more flexible mode. In the latter, the solver could explore, make permutations, and bypass constraints that obstructed the creation of a viable level.
+The output of this process was a common level description that was reproduced in every client and the server.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/stg_deso_solver.avif&quot;
+alt=&quot;features development with erosion&quot;
+format=&quot;avif&quot;
+width=&quot;1080&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Technical Bits&lt;/h1&gt;
+&lt;p&gt;As this was a multiplayer game utilizing a deterministic engine, it was essential for the client and server to produce identical results during the level generation process. To ensure this, I developed several tools that integrated seamlessly with Quantum&apos;s navmesh data model. These tools included debugging utilities to visualize errors in the generation process and address garbage collection issues inherent to the creation of runtime geometry. Additionally, I created validation tools to ensure the navigation mesh&apos;s generated areas were navigable and reachable.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/stg_deso_tools_a.avif&quot;
+alt=&quot;features development with erosion&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;A tile design helper was implemented to check the boundaries of all the tiles and save the result to a collection/set. This tool provided asset validation and checked for errors for in the precalculated navmesh&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/stg_deso_tiles.avif&quot;
+alt=&quot;features development with erosion&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Acknowledgments and Credits&lt;/h1&gt;
+&lt;p&gt;The content used by the level generator was developed by the art team, with the tile creation tools designed to align with their feedback and requirements. Critical aspects such as data serialization and server integration were handled by the engineering team. Their contributions were indispensable in making this system a reality.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;Footnotes&lt;/h1&gt;
+&lt;p&gt;[^1]:&lt;a href=&quot;https://www.photonengine.com/quantum&quot;&gt;Quantum&lt;/a&gt; by Exit Games
+[^2]:&lt;a href=&quot;https://github.com/mxgmn/WaveFunctionCollapse&quot;&gt;WFC Reference Implementation&lt;/a&gt;&lt;/p&gt;
+</content:encoded><author>Juan</author></item></channel></rss>

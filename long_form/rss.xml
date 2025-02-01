@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/rss/rss.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Juan</title><description>Technical Artist</description><link>https://juancaflorez.github.io/</link><language>en-us</language><item><title>Terrain Solver</title><link>https://juancaflorez.github.io/long_form/terrain_solver/</link><guid isPermaLink="true">https://juancaflorez.github.io/long_form/terrain_solver/</guid><description>An alternative approach to solving features in a terrain</description><pubDate>Thu, 15 Aug 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Intro&lt;/h1&gt;
+&lt;p&gt;Let’s talk terrain generation, specifically the tools designed to create vast landscapes. Most of these tools operate on a common principle: representing elevation changes using grayscale images or 2D volumes, much like Houdini does.&lt;/p&gt;
+&lt;p&gt;However, when dealing with terrains that feature extreme height variations, this method starts to fall short. Structures like cliffs and canyons become distorted, stretched beyond recognition. This project is focused on addressing those problematic areas where traditional methods just don’t measure up.&lt;/p&gt;
+&lt;h1&gt;Problem&lt;/h1&gt;
+&lt;p&gt;Let’s consider the terrain in the image below. This height field began its life in Houdini and was then exported to Gaea for some fine-tuning. Here’s where the issues start to emerge. The traditional fix would involve either filling these problem areas with pre-made rocks from a library or manually sculpting the terrain to match the desired topology.&lt;/p&gt;
+&lt;p&gt;Both methods come with their own set of challenges. Relying on a library of assets—like Megascans can be restrictive, as those assets might not always align with the production&apos;s art style. Plus, using the same rocks across a large area can lead to noticeable repetition. On the other hand, having environment artists sculpt custom assets from scratch is time-consuming and can become costly, especially if the production undergoes frequent changes.&lt;/p&gt;
+&lt;p&gt;While browsing SideFX&apos;s features page, I came across someone who shared the same frustrations. Inspired by their approach&lt;a href=&quot;https://www.sidefx.com/hydra-studios/&quot;&gt;^1&lt;/a&gt;, I decided to tackle the issue myself and implement my own solution following their approach.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/trp_solver_problem.avif&quot;
+alt=&quot;some&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;The height field is converted into a triangulated geometry, that can be pushed in any direction.
+From the height field some attributes are imported to identify areas like rocks, soil, and vegetation.&lt;/p&gt;
+&lt;h1&gt;Basic Shapes Across Time&lt;/h1&gt;
+&lt;p&gt;Just as in the erosion processes modeled in Houdini&apos;s landscape operators, this tool also is also a solver, and the shapes evolve over time.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/trp_features_a.avif&quot;
+alt=&quot;features development with erosion&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;The possible rock shapes are growth from a base voronoi function that is layered with many other noise functions. These functions are used at specific times. It is also possible to control the direction of the growth using forces.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/trp_features_b.avif&quot;
+alt=&quot;features development with erosion&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;Also the rock growth is affected by a custom hydraulic erosion solver that runs over the 3d geometry to create weathering effects.&lt;/p&gt;
+&lt;h1&gt;Erosion on a Medium Scale&lt;/h1&gt;
+&lt;p&gt;On a larger scale, the erosion of the soil can also reveals more areas that become a target for rock growth.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/trp_rk_rockmap.avif&quot;
+alt=&quot;some&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Additional Features&lt;/h1&gt;
+&lt;p&gt;The erosion works by also shifting soil material downward, following the path of water flow, and leaving behind deposits and rock debris in its wake.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/trp_maps_evolution.avif&quot;
+alt=&quot;some&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Technical Bits&lt;/h1&gt;
+&lt;p&gt;In this solver the domain geometry is remeshed in each frame, increasing the detail as the time advances.
+To keep the shape of the rocks independent from the resolution, a &lt;strong&gt;&quot;rock map&quot;&lt;/strong&gt; is calculated each frame.
+At the core of this rock map is a voronoi function with accurate edge distance calculation and ids output.
+This function was adapted from Inigo Quiles article on accurate voronoi edge distances&lt;a href=&quot;https://iquilezles.org/articles/voronoilines/&quot;&gt;^2&lt;/a&gt; with a few modifications to make the code
+more readable.&lt;/p&gt;
+&lt;p&gt;import MasonryLayout from &apos;../../../components/Masonry.astro&apos;;&lt;/p&gt;
+&lt;p&gt;&amp;lt;MasonryLayout images={[
+{ src: &quot;/assets/images/trp_solver_hydro.avif&quot;, alt: &quot;water paths&quot; },
+{ src: &quot;/assets/images/trp_solver_weights.avif&quot;, alt: &quot;direction weights&quot; },
+{ src: &quot;/assets/images/trp_solver_rmap.avif&quot;, alt: &quot;rock map core&quot; },
+{ src: &quot;/assets/images/trp_solver_voro.avif&quot;, alt: &quot;custom voronoise with correct distance&quot; },
+]} /&amp;gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Water paths from gradient descent&lt;/li&gt;
+&lt;li&gt;Random feature growth direction using each voronoi site seed&lt;/li&gt;
+&lt;li&gt;Rocks map VOP&lt;/li&gt;
+&lt;li&gt;The core of the solver is a custom voronoi function implemented in VEX, it provides accurate edge distances&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;Next Steps&lt;/h1&gt;
+&lt;p&gt;The output from this terrain solver provides data that can be used not only for applying base colors to the geometry&apos;s vertices but also for creating tagged areas that kickstart the texturing process.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;Footnotes&lt;/h1&gt;
+</content:encoded><author>Juan</author></item><item><title>Terrain Texturing</title><link>https://juancaflorez.github.io/long_form/terrain_tex/</link><guid isPermaLink="true">https://juancaflorez.github.io/long_form/terrain_tex/</guid><description>Texturing the output of the Terrain Solver</description><pubDate>Wed, 28 Aug 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Intro&lt;/h1&gt;
+&lt;p&gt;This texturing workflow expands on the previous work made creating assets with a custom &lt;a href=&quot;/long_form/terrain_solver&quot;&gt;terrain solver&lt;/a&gt;.
+Here I will outline my general strategy to create proper UV coordinates for assets with over 1M triangles, create and mix textures using Houdini and finally the use of masks to automate the texturing process using Houdini or Marmoset&lt;/p&gt;
+&lt;h2&gt;Copernicus and Texture Blending&lt;/h2&gt;
+&lt;p&gt;As an example for a more photorealistic asset I created 5 triplanar mapped materials.
+The textures for these materials were re-mixed using content from FAB/Bridge. The process consist of blending two height maps and using the result as a mask to blend all the other channels, like: albedo, specular, etc...&lt;/p&gt;
+&lt;p&gt;The blending of the was done using Copernicus with a custom but simple &lt;a href=&quot;https://juanflorez.codeberg.page/reference/houdini/cops/custom-ops/&quot;&gt;OpenCL node&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/trp_tsolver_txopencl.avif&quot;
+alt=&quot;features development with erosion&quot;
+format=&quot;avif&quot;
+width=&quot;1080&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;To avoid manually exporting each map manually a basic TOP network was used to automate the process&lt;/p&gt;
+&lt;h1&gt;Stylized Textures Approach&lt;/h1&gt;
+&lt;h1&gt;Texture Mapping Coordinates Strategy&lt;/h1&gt;
+&lt;p&gt;There is software specialized&lt;a href=&quot;%5BRizomuv-vs%5D(https://www.rizom-lab.com/rizomuv-vs/)&quot;&gt;^1&lt;/a&gt; in generating UV coordinates specially assets with a high polygon count. But for the sake of reducing complexity I am doing as much work inside Houdini. To handle the creation of the UVs on these meshes my strategy consists of:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Poly reduce geometry preserving the most important features [^2]&lt;/li&gt;
+&lt;li&gt;Create UVs using clusters and a breadth search to cover the entire surface (Using Clusters)&lt;/li&gt;
+&lt;li&gt;Transfer UVs to the original high resolution geometry&lt;/li&gt;
+&lt;li&gt;Bake all the maps and masks created by the terrain solver&lt;/li&gt;
+&lt;li&gt;Export to Marmoset/Substance&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/trp_terrain_uvs.png&quot;
+alt=&quot;uvs strategy&quot;
+format=&quot;png&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;Ready to be painted in Houdini, Marmoset or Substance&lt;/p&gt;
+&lt;h1&gt;Baked&lt;/h1&gt;
+&lt;p&gt;With the materials in place the process can be automated using Houdini, or in a dedicated texture painting application.
+In this case the materials where applied in a Marmoset project using the erosion and vegetation masks created by the solver.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/trp_tsolver_tmaps.avif&quot;
+alt=&quot;texture maps&quot;
+format=&quot;avif&quot;
+width=&quot;1080&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Variations&lt;/h1&gt;
+&lt;p&gt;Further adjusments can be made by an artist on top of the textures. As an example the curvature map and the rocks maps was used to apply a coat of a white rock material on top of the triplanar materials&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/trp_terrain_tex.avif&quot;
+alt=&quot;features development with erosion&quot;
+format=&quot;avif&quot;
+width=&quot;1080&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/trp_tsolver_unreal.avif&quot;
+alt=&quot;features development with erosion&quot;
+format=&quot;avif&quot;
+width=&quot;1080&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Technical Bits&lt;/h1&gt;
+&lt;h1&gt;Footnotes&lt;/h1&gt;
+&lt;p&gt;[^2]: The geometry is decimated using a procedure similar to &lt;a href=&quot;https://vimeo.com/420671078&quot;&gt;Embark&apos;s&lt;/a&gt; one click photogrammetry tool&lt;/p&gt;
+</content:encoded><author>Juan</author></item></channel></rss>
