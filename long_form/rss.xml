@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/rss/rss.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Juan</title><description>Technical Artist</description><link>https://juancaflorez.github.io/</link><language>en-us</language><item><title>Terrain Solver</title><link>https://juancaflorez.github.io/long_form/terrain_solver/</link><guid isPermaLink="true">https://juancaflorez.github.io/long_form/terrain_solver/</guid><description>An alternative approach to solving features in a terrain</description><pubDate>Thu, 15 Aug 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Intro&lt;/h1&gt;
-&lt;p&gt;Let’s talk terrain generation, specifically the tools designed to create vast landscapes. Most of these tools operate on a common principle: representing elevation changes using grayscale images or 2D volumes, much like Houdini does.&lt;/p&gt;
-&lt;p&gt;However, when dealing with terrains that feature extreme height variations, this method starts to fall short. Structures like cliffs and canyons become distorted, stretched beyond recognition. This project is focused on addressing those problematic areas where traditional methods just don’t measure up.&lt;/p&gt;
+&lt;p&gt;Let us explore the topic of terrain generation, with a particular focus on the tools designed to create expansive landscapes. Many of these tools operate on a shared foundational principle: the use of a single dimension to represent elevation. This approach is commonly employed in software such as Houdini.&lt;/p&gt;
+&lt;p&gt;However, this method encounters significant limitations when applied to terrains with extreme height variations. Features such as cliffs and canyons often become distorted, losing their intended form and detail.&lt;/p&gt;
+&lt;p&gt;This project is dedicated to addressing these limitations. Its primary objective is to improve the accuracy and fidelity of terrain generation in areas where conventional methods prove inadequate.&lt;/p&gt;
 &lt;h1&gt;Problem&lt;/h1&gt;
-&lt;p&gt;Let’s consider the terrain in the image below. This height field began its life in Houdini and was then exported to Gaea for some fine-tuning. Here’s where the issues start to emerge. The traditional fix would involve either filling these problem areas with pre-made rocks from a library or manually sculpting the terrain to match the desired topology.&lt;/p&gt;
+&lt;p&gt;Let’s consider the terrain in the image below. This height field began its life in Houdini and was then exported to Gaea for some fine-tuning. Here’s where the issues start to emerge. In the cliff areas the detail is lost. The traditional fix would involve either filling these problem areas with pre-made rocks from a library or manually sculpting the meshes to match the desired topology of the landscape.&lt;/p&gt;
 &lt;p&gt;Both methods come with their own set of challenges. Relying on a library of assets—like Megascans can be restrictive, as those assets might not always align with the production&apos;s art style. Plus, using the same rocks across a large area can lead to noticeable repetition. On the other hand, having environment artists sculpt custom assets from scratch is time-consuming and can become costly, especially if the production undergoes frequent changes.&lt;/p&gt;
 &lt;p&gt;While browsing SideFX&apos;s features page, I came across someone who shared the same frustrations. Inspired by their approach&lt;a href=&quot;https://www.sidefx.com/hydra-studios/&quot;&gt;^1&lt;/a&gt;, I decided to tackle the issue myself and implement my own solution following their approach.&lt;/p&gt;
 &lt;p&gt;&amp;lt;img
@@ -10,31 +11,30 @@ src=&quot;/assets/images/trp_solver_problem.avif&quot;
 alt=&quot;some&quot;
 format=&quot;avif&quot;
 /&amp;gt;&lt;/p&gt;
-&lt;p&gt;The height field is converted into a triangulated geometry, that can be pushed in any direction.
-From the height field some attributes are imported to identify areas like rocks, soil, and vegetation.&lt;/p&gt;
-&lt;h1&gt;Basic Shapes Across Time&lt;/h1&gt;
-&lt;p&gt;Just as in the erosion processes modeled in Houdini&apos;s landscape operators, this tool also is also a solver, and the shapes evolve over time.&lt;/p&gt;
+&lt;h1&gt;Shapes and Time&lt;/h1&gt;
+&lt;p&gt;Just as in the erosion processes modeled with Houdini&apos;s landscape operators, this tool is a solver, and the shapes evolve over time based on their previous state.
+At the beginning the setup of the process involves setting a base resolution of the mesh, a target density resolution and the time the simulation will take.&lt;/p&gt;
+&lt;p&gt;The rock shapes are modeled from a simple voronoise function layered with many other noise functions. These functions can be animated during the simulation to alter the growth shape.&lt;/p&gt;
+&lt;p&gt;Additionally there are functions to push the edges towards the most prominent features or towards areas with a steep change in the curvature. This push has the effect of making the shapes more sharp and defined.&lt;/p&gt;
 &lt;p&gt;&amp;lt;img
 src=&quot;/assets/sequences/trp_features_a.avif&quot;
 alt=&quot;features development with erosion&quot;
 format=&quot;avif&quot;
 /&amp;gt;&lt;/p&gt;
-&lt;p&gt;The possible rock shapes are growth from a base voronoi function that is layered with many other noise functions. These functions are used at specific times. It is also possible to control the direction of the growth using forces.&lt;/p&gt;
+&lt;h1&gt;Erosion for Steep Areas&lt;/h1&gt;
+&lt;p&gt;This solver takes also the results from Houdini&apos;s terrain erosion, and uses areas marked as soil or rock to run a custom hydraulic erosion solver that runs over the 3d geometry to create weathering effects. (Unlike Houdini&apos;s stock erosion operators)&lt;/p&gt;
 &lt;p&gt;&amp;lt;img
 src=&quot;/assets/sequences/trp_features_b.avif&quot;
 alt=&quot;features development with erosion&quot;
 format=&quot;avif&quot;
 /&amp;gt;&lt;/p&gt;
-&lt;p&gt;Also the rock growth is affected by a custom hydraulic erosion solver that runs over the 3d geometry to create weathering effects.&lt;/p&gt;
-&lt;h1&gt;Erosion on a Medium Scale&lt;/h1&gt;
 &lt;p&gt;On a larger scale, the erosion of the soil can also reveals more areas that become a target for rock growth.&lt;/p&gt;
 &lt;p&gt;&amp;lt;img
 src=&quot;/assets/sequences/trp_rk_rockmap.avif&quot;
 alt=&quot;some&quot;
 format=&quot;avif&quot;
 /&amp;gt;&lt;/p&gt;
-&lt;h1&gt;Additional Features&lt;/h1&gt;
-&lt;p&gt;The erosion works by also shifting soil material downward, following the path of water flow, and leaving behind deposits and rock debris in its wake.&lt;/p&gt;
+&lt;p&gt;The erosion also can transport material by moving soil material downwards, following the path of water flow, leaving behind deposits of rock and debris.&lt;/p&gt;
 &lt;p&gt;&amp;lt;img
 src=&quot;/assets/sequences/trp_maps_evolution.avif&quot;
 alt=&quot;some&quot;
