@@ -210,6 +210,13 @@ declare module 'astro:content' {
   collection: "short_form";
   data: InferEntrySchema<"short_form">
 } & { render(): Render[".mdx"] };
+"2024-07-29-pg-map.mdx": {
+	id: "2024-07-29-pg-map.mdx";
+  slug: "pg_map";
+  body: string;
+  collection: "short_form";
+  data: InferEntrySchema<"short_form">
+} & { render(): Render[".mdx"] };
 "2024-08-04-level-gen.mdx": {
 	id: "2024-08-04-level-gen.mdx";
   slug: "level_gen";
