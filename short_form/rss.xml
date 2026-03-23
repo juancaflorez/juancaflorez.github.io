@@ -41,35 +41,6 @@ format=&quot;avif&quot;
 &lt;p&gt;For the planet system, I teamed up with an intern graphics engineer and the lead artist to keep the frame time budget and texture storage limits. Their expertise was invaluable; without their support, delivering a performant background environment wouldn’t have been possible.&lt;/p&gt;
 &lt;p&gt;Homeworld Mobile was an MMO developed by Stratosphere Games and published by Gearbox Publishing.&lt;/p&gt;
 &lt;hr /&gt;
-</content:encoded><author>Juan</author></item><item><title>Map Generation, in Space</title><link>https://juancaflorez.github.io/short_form/pg_map/</link><guid isPermaLink="true">https://juancaflorez.github.io/short_form/pg_map/</guid><description>Runtime Procedural Map</description><pubDate>Mon, 29 Jul 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Runtime Procedural Map&lt;/h1&gt;
-&lt;p&gt;Expanding the content created for Homeworld Mobile and using the star systems location used in the generation of &lt;a href=&quot;/short_form/bg_art&quot;&gt;background elements&lt;/a&gt;
-I also worked on creating a runtime procedurally generated galaxy map. This map represented the player&apos;s clan&apos;s territorial conquests.&lt;/p&gt;
-&lt;p&gt;&amp;lt;img
-src=&quot;/assets/sequences/stg_map_game.avif&quot;
-alt=&quot;runtime procedural map&quot;
-format=&quot;avif&quot;
-/&amp;gt;&lt;/p&gt;
-&lt;h1&gt;Technical Bits&lt;/h1&gt;
-&lt;p&gt;To keep things running smoothly, the map&apos;s geometry was built as a single piece, cutting down on excessive draw calls. All the necessary data was baked right into the mesh, which fed into a shader that handled each faction colors and banners.&lt;/p&gt;
-&lt;p&gt;For the map generation the most important input was just point coordinates, with this in mind it was decided that the fastest way to create geometry was to use a Delaunay triangulation library [^1]. This in turn imposed a look in the map that can be hard to shape from the perspective of an artist. For this purpose I created additional editor tools to manipulate the points and shape the look.&lt;/p&gt;
-&lt;p&gt;&amp;lt;img
-src=&quot;/assets/images/stg_map_shapes.avif&quot;
-alt=&quot;nebulas and planets&quot;
-format=&quot;avif&quot;
-/&amp;gt;&lt;/p&gt;
-&lt;p&gt;As the players claimed territories during the span of days, some territories in the map could become fractured and end up having concave shapes. To apply a clan&apos;s banner in these shapes was an issue since finding the center of a concave shape fast is not a trivial task[^2]. To solve this problem I implemented an algorithm to find the center of any arbitrary polygon[^3]&lt;/p&gt;
-&lt;p&gt;&amp;lt;img
-src=&quot;/assets/images/stg_map_graph.avif&quot;
-alt=&quot;nebulas and planets&quot;
-format=&quot;avif&quot;
-/&amp;gt;&lt;/p&gt;
-&lt;p&gt;The map data structures were made up of only integers pointing to three different arrays an their indices (points, edges, triangles). Internally the delaunay graph (in this implementation) uses the &lt;em&gt;half edges&lt;/em&gt; data structure[^4]. This structure allows us to walk the geometry and to find relations between the two graphs easily. (delaunay and voronoi) and build a set of rules to solve the construction of the map geometry.&lt;/p&gt;
-&lt;h1&gt;Footnotes&lt;/h1&gt;
-&lt;p&gt;[^1]: Redblob games has an easy to follow article about the &lt;a href=&quot;https://mapbox.github.io/delaunator/&quot;&gt;Delaunator&lt;/a&gt; library
-[^2]: Traditional algorithms to find the center of a shape &lt;a href=&quot;https://graphstream-project.org/doc/Algorithms/Centroid/&quot;&gt;Centroid&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/Straight_skeleton&quot;&gt;Straigh Skeleton&lt;/a&gt;
-[^3]: On how to find the center of a concave shape efficiently &lt;a href=&quot;https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc&quot;&gt;Polylabel explanined&lt;/a&gt; and
-&lt;a&gt;Poles of inaccessibility&lt;/a&gt; concept
-[^4]: On graphs and the &lt;a href=&quot;https://cs184.eecs.berkeley.edu/sp19/article/15/the-half-edge-data-structure&quot;&gt;half edges data structure&lt;/a&gt;&lt;/p&gt;
 </content:encoded><author>Juan</author></item><item><title>Dungeons Generator</title><link>https://juancaflorez.github.io/short_form/level_gen/</link><guid isPermaLink="true">https://juancaflorez.github.io/short_form/level_gen/</guid><description>Custom WFC solver</description><pubDate>Sun, 04 Aug 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Intro&lt;/h1&gt;
 &lt;p&gt;The Desolation was a cooperative looter-shooter designed for both mobile and consoles. The game featured a variety of environments, with a primary focus on underground, dungeon-like levels.&lt;/p&gt;
 &lt;p&gt;&amp;lt;img
@@ -108,4 +79,33 @@ format=&quot;avif&quot;
 &lt;h1&gt;Footnotes&lt;/h1&gt;
 &lt;p&gt;[^1]:&lt;a href=&quot;https://www.photonengine.com/quantum&quot;&gt;Quantum&lt;/a&gt; by Exit Games
 [^2]:&lt;a href=&quot;https://github.com/mxgmn/WaveFunctionCollapse&quot;&gt;WFC Reference Implementation&lt;/a&gt;&lt;/p&gt;
+</content:encoded><author>Juan</author></item><item><title>Map Generation, in Space</title><link>https://juancaflorez.github.io/short_form/pg_map/</link><guid isPermaLink="true">https://juancaflorez.github.io/short_form/pg_map/</guid><description>Runtime Procedural Map</description><pubDate>Mon, 29 Jul 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Runtime Procedural Map&lt;/h1&gt;
+&lt;p&gt;Expanding the content created for Homeworld Mobile and using the star systems location used in the generation of &lt;a href=&quot;/short_form/bg_art&quot;&gt;background elements&lt;/a&gt;
+I also worked on creating a runtime procedurally generated galaxy map. This map represented the player&apos;s clan&apos;s territorial conquests.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/sequences/stg_map_game.avif&quot;
+alt=&quot;runtime procedural map&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;h1&gt;Technical Bits&lt;/h1&gt;
+&lt;p&gt;To keep things running smoothly, the map&apos;s geometry was built as a single piece, cutting down on excessive draw calls. All the necessary data was baked right into the mesh, which fed into a shader that handled each faction colors and banners.&lt;/p&gt;
+&lt;p&gt;For the map generation the most important input was just point coordinates, with this in mind it was decided that the fastest way to create geometry was to use a Delaunay triangulation library [^1]. This in turn imposed a look in the map that can be hard to shape from the perspective of an artist. For this purpose I created additional editor tools to manipulate the points and shape the look.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/stg_map_shapes.avif&quot;
+alt=&quot;nebulas and planets&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;As the players claimed territories during the span of days, some territories in the map could become fractured and end up having concave shapes. To apply a clan&apos;s banner in these shapes was an issue since finding the center of a concave shape fast is not a trivial task[^2]. To solve this problem I implemented an algorithm to find the center of any arbitrary polygon[^3]&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/stg_map_graph.avif&quot;
+alt=&quot;nebulas and planets&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;The map data structures were made up of only integers pointing to three different arrays an their indices (points, edges, triangles). Internally the delaunay graph (in this implementation) uses the &lt;em&gt;half edges&lt;/em&gt; data structure[^4]. This structure allows us to walk the geometry and to find relations between the two graphs easily. (delaunay and voronoi) and build a set of rules to solve the construction of the map geometry.&lt;/p&gt;
+&lt;h1&gt;Footnotes&lt;/h1&gt;
+&lt;p&gt;[^1]: Redblob games has an easy to follow article about the &lt;a href=&quot;https://mapbox.github.io/delaunator/&quot;&gt;Delaunator&lt;/a&gt; library
+[^2]: Traditional algorithms to find the center of a shape &lt;a href=&quot;https://graphstream-project.org/doc/Algorithms/Centroid/&quot;&gt;Centroid&lt;/a&gt; and &lt;a href=&quot;https://en.wikipedia.org/wiki/Straight_skeleton&quot;&gt;Straigh Skeleton&lt;/a&gt;
+[^3]: On how to find the center of a concave shape efficiently &lt;a href=&quot;https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc&quot;&gt;Polylabel explanined&lt;/a&gt; and
+&lt;a&gt;Poles of inaccessibility&lt;/a&gt; concept
+[^4]: On graphs and the &lt;a href=&quot;https://cs184.eecs.berkeley.edu/sp19/article/15/the-half-edge-data-structure&quot;&gt;half edges data structure&lt;/a&gt;&lt;/p&gt;
 </content:encoded><author>Juan</author></item></channel></rss>

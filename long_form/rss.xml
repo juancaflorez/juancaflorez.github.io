@@ -1,4 +1,61 @@
-<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/rss/rss.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Juan</title><description>Technical Artist</description><link>https://juancaflorez.github.io/</link><language>en-us</language><item><title>Terrain Solver</title><link>https://juancaflorez.github.io/long_form/terrain_solver/</link><guid isPermaLink="true">https://juancaflorez.github.io/long_form/terrain_solver/</guid><description>An alternative approach to solving features in a terrain</description><pubDate>Thu, 15 Aug 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Intro&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="/rss/rss.xsl" type="text/xsl"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Juan</title><description>Technical Artist</description><link>https://juancaflorez.github.io/</link><language>en-us</language><item><title>Unreal PCG custom workflow</title><link>https://juancaflorez.github.io/long_form/terrain_pcg_nodes/</link><guid isPermaLink="true">https://juancaflorez.github.io/long_form/terrain_pcg_nodes/</guid><description>Landscape analysis and asset distribution</description><pubDate>Sat, 04 Jan 2025 13:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Intro&lt;/h1&gt;
+&lt;p&gt;Data Pipeline | Sexy Data&lt;/p&gt;
+&lt;p&gt;This project is about creating input data for Unreal&apos;s PCG system. Here I describe the use of the plugin PCGEx Toolkit [LINK HERE], and a few extensions I wrote to handle the import of custom data assets created in Houdini.&lt;/p&gt;
+&lt;p&gt;Identify potential challenges in a data pipeline early on
+Design data structures and architect a system&lt;/p&gt;
+&lt;p&gt;ALSO: Make code look sexy&lt;/p&gt;
+&lt;h1&gt;Problem&lt;/h1&gt;
+&lt;p&gt;Unreal already comes with tools for creating landscapes, PCG for populating landscapes and PCGEx, an extension with tons of tools to create more advance logic on top of the Unreal&apos;s procedural generation framework. In the example below, a PCGEx node is creating vectors describing the gradient descent in a small terrain area. In this case, two splines where manually positioned on the terrain and the distance between them is calculated.&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/trp_ue_analysis.avif&quot;
+alt=&quot;Gradient Descent&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;size and direction
+small on top, bigger at the bottom&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/trp_ue_simdebris.avif&quot;
+alt=&quot;Gradient Descent&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/trp_ue_pcg_idea.avif&quot;
+alt=&quot;Gradient Descent&quot;
+format=&quot;avif&quot;
+/&amp;gt;
+Water accumulation driving the wetness of the ground texture&lt;/p&gt;
+&lt;p&gt;&amp;lt;img
+src=&quot;/assets/images/trp_ue_pcgwip.avif&quot;
+alt=&quot;Gradient Descent&quot;
+format=&quot;avif&quot;
+/&amp;gt;&lt;/p&gt;
+&lt;p&gt;Although this is good for precise editing doing this type work on larger terrain features can become tedious and time consuming.
+If I had access to the erosion data, like water flow, sediment accumulation and other aspects of terrain generation produced by software like houdini or gaea, it could be used for texturing and placing assets with this data in consideration.&lt;/p&gt;
+&lt;p&gt;One are laking in these tools is the connection of landscape data, like erosion, gradient, stratification and other custom data with PCG. Also, there is the case for the use of PCG data for gameplay logic.&lt;/p&gt;
+&lt;p&gt;For this project I whish to connect, Houdini&apos;s landscape data, with unreal&apos;s PCG system.&lt;/p&gt;
+&lt;p&gt;This process requires a custom pipeline and writing tools on top of these three systems.&lt;/p&gt;
+&lt;h2&gt;Houdini to Unreal PCG&lt;/h2&gt;
+&lt;p&gt;Show the houdini setup&lt;/p&gt;
+&lt;h1&gt;Technical aspects&lt;/h1&gt;
+&lt;p&gt;If the data origin is a Houdini terrain simulation, that is processed by Unreal PCG and then used for some gameplay.&lt;/p&gt;
+&lt;p&gt;Data is imported as points, sampled from the terrain.
+This data can be heterogenous. Described as components of an entity&lt;/p&gt;
+&lt;p&gt;Homogenous, heterogenous&lt;/p&gt;
+&lt;p&gt;Although both houdini and UPCG use homogenous data sets. This custom system can filter&lt;/p&gt;
+&lt;p&gt;Add terrain logic to the PCG system
+Contextual asset distribution&lt;/p&gt;
+&lt;p&gt;Opportunities to distribute assets&lt;/p&gt;
+&lt;p&gt;Low frequency and prominent, to high frequency used to break the terrain textures tiling.&lt;/p&gt;
+&lt;p&gt;Spline based asset&lt;/p&gt;
+&lt;h1&gt;Technical Bits&lt;/h1&gt;
+&lt;p&gt;Custom PCG Nodes created in blueprints
+PCGEx for the terrain analysis, and creation of the splines
+Finally a custom PCG C++ node for the curvature&lt;/p&gt;
+&lt;p&gt;import MasonryLayout from &apos;../../../components/Masonry.astro&apos;;&lt;/p&gt;
+&lt;p&gt;&amp;lt;MasonryLayout images={[
+{ src: &quot;/assets/images/trp_ue_pcg_idea.avif&quot;, alt: &quot;graph pcgex&quot; },
+]} /&amp;gt;&lt;/p&gt;
+</content:encoded><author>Juan</author></item><item><title>Terrain Solver</title><link>https://juancaflorez.github.io/long_form/terrain_solver/</link><guid isPermaLink="true">https://juancaflorez.github.io/long_form/terrain_solver/</guid><description>An alternative approach to solving features in a terrain</description><pubDate>Thu, 15 Aug 2024 17:18:14 GMT</pubDate><content:encoded>&lt;h1&gt;Intro&lt;/h1&gt;
 &lt;p&gt;Let us explore the topic of terrain generation, with a particular focus on the tools designed to create expansive landscapes. Many of these tools operate on a shared foundational principle: the use of a single dimension to represent elevation. This approach is commonly employed in software such as Houdini.&lt;/p&gt;
 &lt;p&gt;However, this method encounters significant limitations when applied to terrains with extreme height variations. Features such as cliffs and canyons often become distorted, losing their intended form and detail.&lt;/p&gt;
 &lt;p&gt;This project is dedicated to addressing these limitations. Its primary objective is to improve the accuracy and fidelity of terrain generation in areas where conventional methods prove inadequate.&lt;/p&gt;
