@@ -1,0 +1,67 @@
+<!DOCTYPE html><meta charset="utf-8"><script type="module" src="/_astro/page.DV7Coisz.js"></script><h1 id="astro-pages">Astro Pages</h1>
+<h3 id="refer-to-astro-docs-on-pages">Refer to <a href="https://docs.astro.build/en/basics/astro-pages/">Astro docs on Pages</a></h3>
+<hr>
+<h2 id="overview">Overview</h2>
+<p>Pages define the routes of the site. The project uses static site generation (SSG) for optimal performance and hosting flexibility.</p>
+<h2 id="page-types">Page Types</h2>
+<h3 id="static-pages">Static Pages</h3>
+<ul>
+<li><strong><a href="index.astro">index.astro</a></strong>: Homepage using <a href="../components/Homepage.astro">Homepage.astro</a> for layout and featured content</li>
+<li><strong><a href="404.astro">404.astro</a></strong>: Custom error page featuring random quotes from <a href="../scripts/burgundy.ts">burgundy.ts</a></li>
+<li><strong><a href="cv.astro">cv.astro</a></strong>: Resume page importing a pre-rendered HTML export from <a href="https://github.com/erfianugrah/cv-v0">cv-v0</a></li>
+</ul>
+<h3 id="collection-index-pages">Collection Index Pages</h3>
+<p>Each collection has a top-level index page that lists all its entries:</p>
+<ul>
+<li><strong><a href="muses.astro">muses.astro</a></strong>: Photography collections landing page</li>
+<li><strong><a href="short_form.astro">short_form.astro</a></strong>: Short blog posts index</li>
+<li><strong><a href="long_form.astro">long_form.astro</a></strong>: Long-form articles index</li>
+<li><strong><a href="zeitweilig.astro">zeitweilig.astro</a></strong>: Ephemeral content index</li>
+<li><strong><a href="authors.astro">authors.astro</a></strong>: Author profiles index</li>
+</ul>
+<h3 id="dynamic-pages">Dynamic Pages</h3>
+<p>Each collection follows the same routing pattern:</p>
+<ul>
+<li><strong><code>[collection]/[...id].astro</code></strong>: Individual content pages generated from collections</li>
+<li><strong><code>[collection]/tags/[tag].astro</code></strong>: Tag-specific pages showing all content with a given tag</li>
+<li><strong><code>[collection]/tags/index.astro</code></strong>: Tag listings for each collection</li>
+</ul>
+<p>This applies to all five collections: <code>muses</code>, <code>short_form</code>, <code>long_form</code>, <code>zeitweilig</code>, and <code>authors</code>.</p>
+<h2 id="dynamic-routing">Dynamic Routing</h2>
+<p>Dynamic routes are generated from content collections defined in <a href="../content.config.ts">content.config.ts</a> using <code>getStaticPaths()</code>:</p>
+<pre class="astro-code astro-code-themes rose-pine-dawn tokyo-night" style="--shiki-light:#575279;--shiki-dark:#a9b1d6;--shiki-light-bg:#faf4ed;--shiki-dark-bg:#1a1b26; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;" tabindex="0" data-language="astro"><code><span class="line"><span style="--shiki-light:#9893A5;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic">---</span></span>
+<span class="line"><span style="--shiki-light:#286983;--shiki-dark:#7DCFFF">import</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5"> {</span><span style="--shiki-light:#575279;--shiki-light-font-style:italic;--shiki-dark:#0DB9D7;--shiki-dark-font-style:inherit"> getCollection</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5"> }</span><span style="--shiki-light:#286983;--shiki-dark:#7DCFFF"> from</span><span style="--shiki-light:#EA9D34;--shiki-dark:#89DDFF"> "</span><span style="--shiki-light:#EA9D34;--shiki-dark:#9ECE6A">astro:content</span><span style="--shiki-light:#EA9D34;--shiki-dark:#89DDFF">"</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#286983;--shiki-dark:#7DCFFF">export</span><span style="--shiki-light:#286983;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic"> async</span><span style="--shiki-light:#286983;--shiki-dark:#BB9AF7"> function</span><span style="--shiki-light:#D7827E;--shiki-dark:#7AA2F7"> getStaticPaths</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5">()</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5"> {</span></span>
+<span class="line"><span style="--shiki-light:#286983;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic">  const</span><span style="--shiki-light:#575279;--shiki-light-font-style:italic;--shiki-dark:#BB9AF7;--shiki-dark-font-style:inherit"> posts</span><span style="--shiki-light:#286983;--shiki-dark:#89DDFF"> =</span><span style="--shiki-light:#286983;--shiki-light-font-style:inherit;--shiki-dark:#BB9AF7;--shiki-dark-font-style:italic"> await</span><span style="--shiki-light:#D7827E;--shiki-dark:#7AA2F7"> getCollection</span><span style="--shiki-light:#575279;--shiki-dark:#9ABDF5">(</span><span style="--shiki-light:#EA9D34;--shiki-dark:#89DDFF">"</span><span style="--shiki-light:#EA9D34;--shiki-dark:#9ECE6A">short_form</span><span style="--shiki-light:#EA9D34;--shiki-dark:#89DDFF">"</span><span style="--shiki-light:#575279;--shiki-dark:#9ABDF5">)</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF">;</span></span>
+<span class="line"><span style="--shiki-light:#286983;--shiki-light-font-style:inherit;--shiki-dark:#BB9AF7;--shiki-dark-font-style:italic">  return</span><span style="--shiki-light:#575279;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit"> posts</span><span style="--shiki-light:#286983;--shiki-dark:#89DDFF">.</span><span style="--shiki-light:#D7827E;--shiki-dark:#7AA2F7">map</span><span style="--shiki-light:#575279;--shiki-dark:#9ABDF5">(</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5">(</span><span style="--shiki-light:#907AA9;--shiki-light-font-style:italic;--shiki-dark:#E0AF68;--shiki-dark-font-style:inherit">post</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5">)</span><span style="--shiki-light:#286983;--shiki-dark:#BB9AF7"> =></span><span style="--shiki-light:#575279;--shiki-dark:#9ABDF5"> (</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5">{</span></span>
+<span class="line"><span style="--shiki-light:#575279;--shiki-dark:#73DACA">    params</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF">:</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5"> {</span><span style="--shiki-light:#575279;--shiki-dark:#73DACA"> id</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF">:</span><span style="--shiki-light:#575279;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit"> post</span><span style="--shiki-light:#286983;--shiki-dark:#89DDFF">.</span><span style="--shiki-light:#575279;--shiki-light-font-style:italic;--shiki-dark:#7DCFFF;--shiki-dark-font-style:inherit">id</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5"> }</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF">,</span></span>
+<span class="line"><span style="--shiki-light:#575279;--shiki-dark:#73DACA">    props</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF">:</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5"> {</span><span style="--shiki-light:#575279;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit"> post</span><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5"> }</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF">,</span></span>
+<span class="line"><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5">  }</span><span style="--shiki-light:#575279;--shiki-dark:#9ABDF5">))</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF">;</span></span>
+<span class="line"><span style="--shiki-light:#797593;--shiki-dark:#9ABDF5">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#286983;--shiki-light-font-style:inherit;--shiki-dark:#9D7CD8;--shiki-dark-font-style:italic">const</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF"> {</span><span style="--shiki-light:#575279;--shiki-light-font-style:italic;--shiki-dark:#BB9AF7;--shiki-dark-font-style:inherit"> post</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF"> }</span><span style="--shiki-light:#286983;--shiki-dark:#89DDFF"> =</span><span style="--shiki-light:#575279;--shiki-light-font-style:italic;--shiki-dark:#C0CAF5;--shiki-dark-font-style:inherit"> Astro</span><span style="--shiki-light:#286983;--shiki-dark:#89DDFF">.</span><span style="--shiki-light:#575279;--shiki-light-font-style:italic;--shiki-dark:#7DCFFF;--shiki-dark-font-style:inherit">props</span><span style="--shiki-light:#797593;--shiki-dark:#89DDFF">;</span></span>
+<span class="line"><span style="--shiki-light:#9893A5;--shiki-light-font-style:italic;--shiki-dark:#51597D;--shiki-dark-font-style:italic">---</span></span></code></pre>
+<p>Most of this boilerplate is handled by the shared helpers in <a href="../scripts/collections.ts">collections.ts</a> - <code>buildDetailPaths()</code> and <code>buildTagPaths()</code>.</p>
+<h2 id="rss-feed-generation">RSS Feed Generation</h2>
+<p>Each collection directory generates an RSS feed via <a href="../scripts/collections.ts">collections.ts</a>’s <code>generateRss()</code> helper:</p>
+<ul>
+<li><code>/long_form/rss.xml</code></li>
+<li><code>/short_form/rss.xml</code></li>
+<li><code>/muses/rss.xml</code></li>
+<li><code>/zeitweilig/rss.xml</code></li>
+<li><code>/authors/rss.xml</code></li>
+</ul>
+<p>The RSS link icon in the header is conditionally shown by <a href="../scripts/rss.ts">rss.ts</a> based on the current path.</p>
+<h2 id="type-safety">Type Safety</h2>
+<ul>
+<li><strong>index.astro</strong>: The collections array is declared with <code>as const</code> so TypeScript narrows its elements to literal collection names. Accumulator arrays in <code>reduce()</code> calls are explicitly typed (<code>CollectionEntry&#x3C;…>[]</code>) and post-filter results use non-null assertions where the filter guarantees a value.</li>
+</ul>
+<h2 id="component-integration">Component Integration</h2>
+<p>Each page incorporates <a href="../components/">components</a> and <a href="../layouts/">layouts</a> to maintain consistency. Pages typically:</p>
+<ol>
+<li>Import needed components and layouts</li>
+<li>Fetch data from content collections</li>
+<li>Define any page-specific logic in the frontmatter</li>
+<li>Render the appropriate layout with relevant content</li>
+</ol>
